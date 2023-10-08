@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
+import { Form, FormControl } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
-import links from '../utility/links';
-import { FormControl } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useGlobalContext } from '../context/context';
+import links from '../utility/links';
 
 const Navbar = () => {
 
-    const { query, setQuery, setPayload } = useGlobalContext();
-
+    const { query, setQuery, setPayload, showSearch } = useGlobalContext();
     const [show, setShow] = useState(false);
 
     const handleSearch = (e) => {
         const { value } = e.target;
         setQuery(value)
-        // if (value && value.length > 3) {
         setPayload(value)
-        // }
     }
 
     return (
@@ -26,14 +23,6 @@ const Navbar = () => {
                 <div className="nav-brand mt-2">
                     <h6 style={{ color: "white" }}>Protocollo Risparmio</h6>
                 </div>
-
-                <button
-                    className="navbar-toggler collapsed"
-                    type="button"
-                    onClick={() => setShow(!show)}
-                >
-                    <FaBars className="nav-icon" />
-                </button>
 
                 <div className={`${show ? "container-fluid" : "text-center align-items-center"}`}>
                     <div className={`collapse navbar-collapse ${show ? "show" : ""}`}>
@@ -54,14 +43,22 @@ const Navbar = () => {
                         </ul>
                     </div>
                 </div>
-
-                <form>
+                <Form>
                     <FormControl
+                        style={{ display: showSearch ? `block` : `none` }}
                         type='search'
                         placeholder='Cerca'
                         value={query}
                         onChange={(e) => handleSearch(e)} />
-                </form>
+                </Form>
+
+                <button
+                    className="btn navbar-toggler collapsed"
+                    type="button"
+                    onClick={() => setShow(!show)}
+                >
+                    <FaBars className="nav-icon" />
+                </button>
             </div>
         </nav >
     )

@@ -2,11 +2,11 @@ const payload = {
     fixedCost:
         [
             {
-                name: "Rata macchina",
+                note: "Rata macchina",
                 price: 335
             },
             {
-                name: "Assicurazione",
+                note: "Assicurazione",
                 price: 90
             }
         ],
@@ -18,11 +18,16 @@ const payload = {
                 cost: 400,
                 leisure:
                     [
-                        { const: 100, note: "Cena" }
+                        { price: 100, note: "Cena" },
+                        { price: 150, note: "Gioco" },
+                        { price: 20, note: "Bibite" },
+                        { price: 50, note: "Spesa" }
                     ],
-                FixedMonthlyCredit:
+                fixedMonthlyCredit:
                     [
-                        { credit: 100, note: "Psico" }
+                        { price: 100, note: "Psico" },
+                        { price: 50, note: "Gasolio" },
+                        { price: 20, note: "Regalo" }
                     ]
             },
             {
@@ -31,11 +36,16 @@ const payload = {
                 cost: 400,
                 leisure:
                     [
-                        { const: 100, note: "Cena" }
+                        { price: 100, note: "Cena" },
+                        { price: 150, note: "Gioco" },
+                        { price: 20, note: "Bibite" },
+                        { price: 50, note: "Spesa" }
                     ],
-                FixedMonthlyCredit:
+                fixedMonthlyCredit:
                     [
-                        { credit: 100, note: "Psico" }
+                        { price: 100, note: "Psico" },
+                        { price: 50, note: "Gasolio" },
+                        { price: 20, note: "Regalo" }
                     ]
             },
             {
@@ -44,13 +54,18 @@ const payload = {
                 cost: 400,
                 leisure:
                     [
-                        { const: 100, note: "Cena" }
+                        { price: 100, note: "Cena" },
+                        { price: 150, note: "Gioco" },
+                        { price: 20, note: "Bibite" },
+                        { price: 50, note: "Spesa" }
                     ],
-                FixedMonthlyCredit:
+                fixedMonthlyCredit:
                     [
-                        { credit: 100, note: "Psico" }
+                        { price: 100, note: "Psico" },
+                        { price: 50, note: "Gasolio" },
+                        { price: 20, note: "Regalo" }
                     ]
             }
         ]
 }
-export { payload};
+export { payload };

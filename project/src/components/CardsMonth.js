@@ -1,15 +1,16 @@
 import React from 'react';
 import { Card, Col, Container, Row } from 'react-bootstrap';
-import { useGlobalContext } from '../context/context';
 import { useNavigate } from 'react-router-dom';
+import { useGlobalContext } from '../context/context';
 
 const CardsMonth = () => {
 
   const navigate = useNavigate();
-  const { months } = useGlobalContext();
+  const { months, setShowSearch } = useGlobalContext();
 
   const handleCardMonth = (value) => {
     navigate(`/month/${value}`)
+    setShowSearch(false)
   }
 
   return (
