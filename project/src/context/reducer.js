@@ -1,20 +1,56 @@
 import {
+    ADD,
+    UPDATE_TITLE,
+    EDIT_SALARY,
     SEARCH,
-    SET_QUERY,
     SET_SHOW_SEARCH,
     TABELLA_ACCREDITI,
     TABELLA_SPESE,
     TABELLA_SPESE_FISSE,
-    _single
+    UPDATE,
+    _single,
+    DELETE_CARD,
+    ADD_CARD
 } from "./state";
 
 const reducer = (state, action) => {
-    const { type, payload, name } = action;
+    const { type, payload } = action;
 
-    // Setta la query nella barra di ricerca
-    if (type === SET_QUERY) {
+    // Aggiunge la nuova Card
+    if (type === ADD_CARD) {
+
+        const newPayload = {
+            ...payload,
+            id: state.payload.months.length + 1,
+            priority: state.payload.months.length + 1
+        }
+
+        if (filterCard(state.months, payload.name))
+            state.months.push(newPayload)
+
+        return { ...state }
+    }
+
+    // Setta il titolo del Mese
+    if (type === UPDATE_TITLE) {
         return {
-            ...state, query: payload
+            ...state,
+            months: state.months.filter((item) => {
+                if (item.id === payload.id) {
+                    item.name = payload.value
+                }
+                return {
+                    ...item
+                }
+            })
+        }
+    }
+
+    // Cancella la card del mese 
+    if (type === DELETE_CARD) {
+        return {
+            ...state,
+            months: state.months.filter((item) => item.id !== payload)
         }
     }
 
@@ -53,7 +89,8 @@ const reducer = (state, action) => {
     // Cancella tutto
     if (type === TABELLA_SPESE) {
         return {
-            ...state, months: state.months
+            ...state,
+            months: state.months
                 .filter((el) => {
                     if (el.name === payload)
                         el.leisure = []
@@ -86,9 +123,9 @@ const reducer = (state, action) => {
             ...state,
             months:
                 state.months.filter(el => {
-                    if (el.name === name)
+                    if (el.name === payload.name)
                         el.leisure = el.leisure.filter((a) => {
-                            if (a.note !== payload.note)
+                            if (a.id !== payload.item.id)
                                 return { ...a }
                         })
 
@@ -105,9 +142,9 @@ const reducer = (state, action) => {
             ...state,
             months:
                 state.months.filter(el => {
-                    if (el.name === name)
+                    if (el.name === payload.name)
                         el.fixedMonthlyCredit = el.fixedMonthlyCredit.filter((a) => {
-                            if (a.note !== payload.note)
+                            if (a.id !== payload.item.id)
                                 return { ...a }
                         })
 
@@ -121,15 +158,141 @@ const reducer = (state, action) => {
         return {
             ...state,
             fixedCost:
-                state.fixedCost.filter((el) => el.note !== payload.note)
+                state.fixedCost.filter((el) => el.id !== payload.item.id)
         }
     }
 
-    
+    // Modifica Le righe
+    if (type === UPDATE.concat(TABELLA_SPESE)) {
+        return {
+            ...state,
+            months:
+                state.months.filter(el => {
+                    if (el.name === payload.nameMonth)
+                        el.leisure = el.leisure.filter((a) => {
+                            if (a.id === payload.item.id) {
+                                payload.name === "note" ?
+                                    a.note = payload.value :
+                                    a.price = payload.value
+                            }
+                            return { ...a }
+                        })
+
+                    return { ...el }
+                })
+        }
+    } else if (type === UPDATE.concat(TABELLA_ACCREDITI)) {
+        return {
+            ...state,
+            months:
+                state.months.filter(el => {
+                    if (el.name === payload.nameMonth)
+                        el.fixedMonthlyCredit = el.fixedMonthlyCredit.filter((a) => {
+                            if (a.id === payload.item.id) {
+                                payload.name === "note" ?
+                                    a.note = payload.value :
+                                    a.price = payload.value
+                            }
+                            return { ...a }
+                        })
+
+                    return { ...el }
+                })
+        }
+    } else if (type === UPDATE.concat(TABELLA_SPESE_FISSE)) {
+        return {
+            ...state,
+            fixedCost:
+                state.fixedCost.filter((a) => {
+                    if (a.id === payload.item.id) {
+                        payload.name === "note" ?
+                            a.note = payload.value :
+                            a.price = payload.value
+                    }
+                    return { ...a }
+                })
+        }
+    }
+
+    // Modifica lo stipendio
+    if (type === EDIT_SALARY) {
+        return {
+            ...state,
+            months: state.months.filter((el) => {
+                if (el.id === payload.id) {
+                    el.salary = payload.value
+                }
+                return { ...el }
+            })
+        }
+    }
+
+    // Aggiunge nelle tabelle la riga
+    if (type === ADD.concat(TABELLA_SPESE)) {
+        return {
+            ...state,
+            months: state.months.filter((el) => {
+                if (el.name === payload.nameMonth) {
+                    const newRow =
+                    {
+                        id: el.leisure.length + 1,
+                        note: payload.row.note,
+                        price: payload.row.price
+                    }
+
+                    if (filter(el.leisure, payload.row.note))
+                        el.leisure.push(newRow)
+
+                }
+
+                return { ...el }
+            })
+        }
+
+    } else if (type === ADD.concat(TABELLA_ACCREDITI)) {
+        return {
+            ...state,
+            months: state.months.filter((el) => {
+                if (el.name === payload.nameMonth) {
+                    const newRow =
+                    {
+                        id: el.fixedMonthlyCredit.length + 1,
+                        note: payload.row.note,
+                        price: payload.row.price
+                    }
+
+                    if (filter(el.fixedMonthlyCredit, payload.row.note))
+                        el.fixedMonthlyCredit.push(newRow)
+                }
+                return { ...el }
+            })
+        }
+
+    } else if (type === ADD.concat(TABELLA_SPESE_FISSE)) {
+        if (filter(state.fixedCost, payload.row.note))
+            state.fixedCost.push(
+                {
+                    id: state.fixedCost.length + 1,
+                    note: payload.row.note,
+                    price: payload.row.price
+                }
+            )
+        return {
+            ...state
+        }
+    }
 
 
 
     return state;
 }
+
+const filter = (array, note) => {
+    return array.filter(el => el.note === note).length === 0
+}
+const filterCard = (array, name) => {
+    return array.filter(el => el.name === name).length === 0
+}
+
 
 export default reducer;

@@ -6,9 +6,9 @@ import { useGlobalContext } from '../context/context';
 import links from '../utility/links';
 
 const Navbar = () => {
-
-    const { query, setQuery, setPayload, showSearch } = useGlobalContext();
+    const { setPayload, showSearch } = useGlobalContext();
     const [show, setShow] = useState(false);
+    const [query, setQuery] = useState("")
 
     const handleSearch = (e) => {
         const { value } = e.target;

@@ -1,13 +1,22 @@
 import { createContext, useContext, useReducer } from "react";
 import { payload } from "../utility/payloadMonth";
 import reducer from "./reducer";
-import { SEARCH, SET_QUERY, SET_SHOW_SEARCH, _single } from "./state";
+import {
+    ADD,
+    DELETE_CARD,
+    EDIT_SALARY,
+    SEARCH,
+    SET_SHOW_SEARCH,
+    UPDATE,
+    UPDATE_TITLE,
+    _single,
+    ADD_CARD
+} from "./state";
 
 const AppContext = createContext();
 
 const initialState = {
     payload: payload,
-    query: "",
     months: payload.months,
     fixedCost: payload.fixedCost,
     showSearch: true
@@ -17,9 +26,19 @@ const AppProvider = ({ children }) => {
 
     const [state, dispach] = useReducer(reducer, initialState);
 
-    // Setta la query nella barra di ricerca
-    const setQuery = (value) => {
-        dispach({ type: SET_QUERY, payload: value })
+
+    // Setta il titolo del Mese
+    const setTitle = (id, value) => {
+        dispach({ type: UPDATE_TITLE, payload: { id, value } })
+    }
+
+    // Elimina la Card del mese
+    const deleteCard = (id) => {
+        dispach({ type: DELETE_CARD, payload: id })
+    }
+
+    const addnewCard = (card) => {
+        dispach({ type: ADD_CARD, payload: card })
     }
 
     // Setta il payload in base alla query di ricerca
@@ -30,11 +49,15 @@ const AppProvider = ({ children }) => {
     // Applica un booleano per mostrare la barra di ricerca
     const setShowSearch = (value) => {
         dispach({ type: SET_SHOW_SEARCH, payload: value })
+        // state.showSearch = value
     }
 
     // Cancella una singola riga
     const deleteRow = (name, title, item) => {
-        dispach({ type: title.concat(_single), payload: item, name })
+        dispach({
+            type: title.concat(_single),
+            payload: { item, name }
+        })
     }
 
     // Cancella tutte le righe
@@ -47,17 +70,53 @@ const AppProvider = ({ children }) => {
         state.months = payload.months;
     }
 
+    // Modifica la riga singolarmente
+    const setValueEdited = (name, value, item, nameMonth, title) => {
+        dispach({
+            type: UPDATE.concat(title),
+            payload:
+            {
+                name,
+                value,
+                item,
+                nameMonth
+            }
+        })
+    }
+
+    // Modifica lo stipendio mensile
+    const editSalary = (id, value) => {
+        dispach({
+            type: EDIT_SALARY,
+            payload: { id, value }
+        })
+    }
+
+
+    // Aggiunge la riga con note e price
+    const addRowNote = (nameMonth, title, row) => {
+        dispach({
+            type: ADD.concat(title),
+            payload: { nameMonth, row }
+        })
+    }
+
     return (
         <AppContext.Provider
             value={
                 {
                     ...state,
-                    setQuery,
+                    setTitle,
+                    deleteCard,
+                    addnewCard,
                     setPayload,
                     setShowSearch,
                     deleteRow,
                     deleteAllRow,
-                    refresh
+                    refresh,
+                    setValueEdited,
+                    editSalary,
+                    addRowNote
                 }
             }>
             {children}

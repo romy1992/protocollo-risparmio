@@ -1,15 +1,16 @@
 import React, { useEffect } from 'react'
-import TableMonth from '../components/TableMonth'
+import TableMonth from '../components/month/TableMonth'
 import { useGlobalContext } from '../context/context'
-import useTitle from '../hooks/useTitle'
 import { TABELLA_SPESE_FISSE } from '../context/state'
+import useTitle from '../hooks/useTitle'
 
 const Settings = () => {
+  
   useTitle("Settings")
   const { setShowSearch, fixedCost } = useGlobalContext()
 
   useEffect(() => {
-    setShowSearch(false)
+     setShowSearch(false)
   }, [])
 
   return (
