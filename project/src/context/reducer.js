@@ -10,7 +10,8 @@ import {
     UPDATE,
     _single,
     DELETE_CARD,
-    ADD_CARD
+    ADD_CARD,
+    UPDATE_TOTAL
 } from "./state";
 
 const reducer = (state, action) => {
@@ -25,7 +26,7 @@ const reducer = (state, action) => {
             priority: state.payload.months.length + 1
         }
 
-        if (filterCard(state.months, payload.name))
+        if (filterCard(state.months, payload))
             state.months.push(newPayload)
 
         return { ...state }
@@ -37,7 +38,9 @@ const reducer = (state, action) => {
             ...state,
             months: state.months.filter((item) => {
                 if (item.id === payload.id) {
-                    item.name = payload.value
+                    item.name = payload.body.nameMonth
+                    item.des = payload.body.des
+                    item.year = payload.body.year
                 }
                 return {
                     ...item
@@ -282,16 +285,52 @@ const reducer = (state, action) => {
         }
     }
 
+    // Aggiorna i totali/spese
+    if (type === UPDATE_TOTAL.concat(TABELLA_SPESE)) {
 
-
+        return {
+            ...state, months:
+                state.months.filter(el => {
+                    if (el.id === payload.id) {
+                        el.totalLeisure = payload.total
+                        fixCounter(state, el)
+                    }
+                    return { ...el }
+                })
+        }
+    }
+    else if (type === UPDATE_TOTAL.concat(TABELLA_ACCREDITI)) {
+        return {
+            ...state, months:
+                state.months.filter(el => {
+                    if (el.id === payload.id) {
+                        el.totalFixedMonthlyCredit = payload.total
+                        fixCounter(state, el)
+                    }
+                    return { ...el }
+                })
+        }
+    }
+    else if (type === UPDATE_TOTAL.concat(TABELLA_SPESE_FISSE)) {
+        state.payload.totalFixedCost = payload.total
+        return {
+            ...state
+        }
+    }
     return state;
 }
 
 const filter = (array, note) => {
     return array.filter(el => el.note === note).length === 0
 }
-const filterCard = (array, name) => {
-    return array.filter(el => el.name === name).length === 0
+const filterCard = (array, p) => {
+    return array.filter(el => el.name === p.name && el.year === p.year).length === 0
+}
+
+const fixCounter = (state, el) => {
+    el.cost = el.totalLeisure + el.totalFixedMonthlyCredit +
+        state.fixedCost.reduce((a, b) => a + parseFloat(b.price), 0)
+    el.difference = el.salary - el.cost
 }
 
 

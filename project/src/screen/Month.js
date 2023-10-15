@@ -11,21 +11,22 @@ const Month = () => {
   useTitle(`Mese di ${name}`)
 
   const { months, setShowSearch } = useGlobalContext();
-  const [month, setMonth] = useState({});
+  const [month, setMonth] = useState();
 
   useEffect(() => {
     const ms = months.filter((el) => el.name === name);
     if (ms.length > 0)
       setMonth(months.filter((el) => el.name === name)[0])
 
+    console.log(ms)
     setShowSearch(false)
-  }, [name])
+  }, [name, month.salary, month.cost, month])
 
   return (
-
     <div className='container' >
       <h1 className='mt-3 text-center'>{month.name} {month.year}</h1>
-      <h4 className='mt-3 text-center'>Spese : {month.cost}</h4>
+      <h4 className='mt-3'>Spese Totali : {month && month.cost} €</h4>
+      <h4 className='mt-3'>Risparmi Totali : {month.difference} €</h4>
       <h6 className='mt-3'>{month.des}</h6>
       <hr />
       <>
@@ -34,7 +35,8 @@ const Month = () => {
 
         {/* Tabelle per le spese */}
         <TableMonth
-          // deleteRow={deleteRow}
+          id={month.id}
+          salary={month.salary}
           nameMonth={name}
           title={TABELLA_SPESE}
           obj={month.leisure}
@@ -44,6 +46,8 @@ const Month = () => {
 
         {/* Tabelle per gli accrediti */}
         <TableMonth
+          id={month.id}
+          salary={month.salary}
           nameMonth={name}
           title={TABELLA_ACCREDITI}
           obj={month.fixedMonthlyCredit}

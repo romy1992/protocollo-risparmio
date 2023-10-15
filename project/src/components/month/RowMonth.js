@@ -41,7 +41,7 @@ const RowMonth = React.memo((
                 <td className='text-center'>
                     {
                         !isEdit ?
-                            (item.price) :
+                            (<>{item.price} €</>) :
                             (
                                 <FormControl
                                     name="price"

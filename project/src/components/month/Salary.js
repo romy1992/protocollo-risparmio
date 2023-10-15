@@ -21,7 +21,7 @@ const Salary = ({ month }) => {
     return (
         <Row className='mt-5 text-center'>
             <Col md={2} className='mt-1'>
-                <h5 className='text-center'>Stipendio : {month.salary}</h5>
+                <h5 className='text-center'>Stipendio : {month.salary} €</h5>
             </Col>
             <Col className='mt-1'>
                 <button

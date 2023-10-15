@@ -8,7 +8,7 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, nameMonth, title }) => {
     const [body, setBody] = useState(
         {
             note: "",
-            price: 0
+            price: null
         }
     )
 
@@ -23,12 +23,12 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, nameMonth, title }) => {
         } else {
             setIsOpenRow(!isOpenRow)
             addRowNote(nameMonth, title, body)
-            setBody({ note: '', price: 0 })
+            setBody({ note: '', price: null })
         }
     }
 
     useEffect(() => {
-        setBody({ note: "", price: 0 })
+        setBody({ note: "", price: null })
     }, [isOpenRow])
 
     return (
@@ -47,7 +47,7 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, nameMonth, title }) => {
                     name="price"
                     type="number"
                     placeholder="Inserisci nuovo prezzo"
-                    value={body.price}
+                    value={body.price || 0}
                     onChange={(e) => handleAddRow(e)}
                 />
             </td>

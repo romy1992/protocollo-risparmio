@@ -3,14 +3,15 @@ import { payload } from "../utility/payloadMonth";
 import reducer from "./reducer";
 import {
     ADD,
+    ADD_CARD,
     DELETE_CARD,
     EDIT_SALARY,
     SEARCH,
     SET_SHOW_SEARCH,
     UPDATE,
     UPDATE_TITLE,
-    _single,
-    ADD_CARD
+    UPDATE_TOTAL,
+    _single
 } from "./state";
 
 const AppContext = createContext();
@@ -27,9 +28,9 @@ const AppProvider = ({ children }) => {
     const [state, dispach] = useReducer(reducer, initialState);
 
 
-    // Setta il titolo del Mese
-    const setTitle = (id, value) => {
-        dispach({ type: UPDATE_TITLE, payload: { id, value } })
+    // Setta il titolo,anno e descrizione del Mese
+    const setTitle = (id, body) => {
+        dispach({ type: UPDATE_TITLE, payload: { id, body } })
     }
 
     // Elimina la Card del mese
@@ -101,12 +102,18 @@ const AppProvider = ({ children }) => {
         })
     }
 
+    // Somma i totali
+    const somTotal = (id, total, title) => {
+        dispach({ type: UPDATE_TOTAL.concat(title), payload: { id, total } })
+    }
+
     return (
         <AppContext.Provider
             value={
                 {
                     ...state,
                     setTitle,
+                    somTotal,
                     deleteCard,
                     addnewCard,
                     setPayload,

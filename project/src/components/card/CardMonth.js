@@ -7,7 +7,11 @@ const CardMonth = ({ id, name: nameMonth, year, des, months }) => {
     const navigate = useNavigate();
     const { setTitle, setShowSearch, deleteCard } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
-    const [query, setQuery] = useState(nameMonth)
+    const [body, setBody] = useState(
+        {
+            nameMonth, year, des
+        }
+    )
 
     const handleCardMonth = (value) => {
         navigate(`/month/${value}`)
@@ -15,25 +19,31 @@ const CardMonth = ({ id, name: nameMonth, year, des, months }) => {
     }
 
     const handleChangeName = (e) => {
-        const { value } = e.target
-        setQuery(value)
+        const { name, value } = e.target
+        setBody({
+            ...body, [name]: value
+        })
     }
 
     const updateClick = () => {
         setIsEdit(!isEdit)
         if (checkUpdate(months))
-            setTitle(id, query);
+            setTitle(id, body);
         else {
-            setQuery(nameMonth)
-            return alert("Nome già presente!Provane uno nuovo.")
+            setBody({
+                ...body, nameMonth, year, des
+            })
+            return alert("Nome/Anno già presente..Riprova!!")
         }
     }
 
     // Controlla i vari stati prima dell'aggiornamento del nome
     const checkUpdate = (months) => {
+        const o = months.filter(el => el.id === id)[0];
+        const oArray = months.filter(el => (el.name === body.nameMonth && el.year === body.year));
         return (
-            (months.filter(el => el.name === query).length === 0)
-            || months.filter(el => el.id === id)[0].name === query
+            (oArray.length === 0)
+            || (o.name === body.nameMonth && o.year === body.year)
         )
     }
 
@@ -43,12 +53,25 @@ const CardMonth = ({ id, name: nameMonth, year, des, months }) => {
             <Card.Header>
                 {
                     isEdit ? (
-                        <FormControl
-                            placeholder={nameMonth}
-                            value={query}
-                            id='name'
-                            name='nameMonth'
-                            onChange={(e) => handleChangeName(e)} />) :
+                        <>
+                            <FormControl
+                                placeholder={body.nameMonth}
+                                value={body.nameMonth}
+                                id='name'
+                                type='text'
+                                name='nameMonth'
+                                onChange={(e) => handleChangeName(e)}
+                            />
+                            <FormControl
+                                type='text'
+                                placeholder={body.year}
+                                value={body.year || 0}
+                                id='year'
+                                name='year'
+                                onChange={(e) => handleChangeName(e)}
+                            />
+                        </>
+                    ) :
                         (
                             <>
                                 <Card.Title className='mt-1 font-family-sans-serif display-10 text-center align-items-center'>
@@ -63,7 +86,21 @@ const CardMonth = ({ id, name: nameMonth, year, des, months }) => {
                     <Card.Text>Spese totali : </Card.Text>
                     <Card.Text>Risparmio totale : </Card.Text>
                     {
-                        des && <Card.Text>Descrizione : {des}</Card.Text>
+                        !isEdit ?
+                            (
+                                des && <Card.Text>Descrizione : {des}</Card.Text>
+                            )
+                            :
+                            (
+                                <FormControl
+                                    placeholder={body.des}
+                                    value={body.des}
+                                    id='des'
+                                    name='des'
+                                    type='text'
+                                    onChange={(e) => handleChangeName(e)}
+                                />
+                            )
                     }
                 </Card.Subtitle>
                 <Row className='mt-3 text-center align-items-center'>

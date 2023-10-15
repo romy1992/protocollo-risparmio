@@ -5,11 +5,11 @@ import { IoIosAdd } from 'react-icons/io';
 import { useGlobalContext } from '../../context/context';
 
 const CardNew = ({ setIsOpenNew }) => {
-    const { addnewCard } = useGlobalContext();
+    const { addnewCard, months } = useGlobalContext();
     const [newCard, setNewCard] = useState
         (
             {
-                name: "", year: null, des: "", leisure: [], fixedMonthlyCredit: []
+                name: "", year: "", des: "", leisure: [], fixedMonthlyCredit: []
             }
         )
 
@@ -19,16 +19,21 @@ const CardNew = ({ setIsOpenNew }) => {
     }
 
     const handleReset = () => {
-        setNewCard({ ...newCard, name: "", year: 0, des: "" })
+        setNewCard({ ...newCard, name: "", year: "", des: "" })
     };
 
     const addClickCard = () => {
-        if (newCard.name) {
+        console.log(months)
+        console.log(newCard)
+        const o = months.filter(el => el.name === newCard.name &&
+            el.year === newCard.year)
+        console.log(o.length===0)
+        if (newCard.name && o.length === 0) {
             addnewCard(newCard)
             handleReset();
             setIsOpenNew(false)
         } else
-            return alert("In nome del raccoglitore è obbligatorio")
+            return alert("In nome del raccoglitore è obbligatorio o è già esistente. Riprova!")
     }
 
 
@@ -48,7 +53,7 @@ const CardNew = ({ setIsOpenNew }) => {
                         <FormControl
                             className='mt-2'
                             name='year'
-                            type='number'
+                            type='text'
                             placeholder='Valore numerale tipo : anno'
                             value={newCard.year}
                             onChange={handleNewCard}
