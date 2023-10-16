@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useState } from "react";
 import { payload } from "../utility/payloadMonth";
 import reducer from "./reducer";
 import {
@@ -26,7 +26,7 @@ const initialState = {
 const AppProvider = ({ children }) => {
 
     const [state, dispach] = useReducer(reducer, initialState);
-
+    const [isLogged, setIsLogged] = useState(false)
 
     // Setta il titolo,anno e descrizione del Mese
     const setTitle = (id, body) => {
@@ -123,7 +123,9 @@ const AppProvider = ({ children }) => {
                     refresh,
                     setValueEdited,
                     editSalary,
-                    addRowNote
+                    addRowNote,
+                    isLogged,
+                    setIsLogged
                 }
             }>
             {children}

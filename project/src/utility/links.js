@@ -2,7 +2,7 @@
 const links =
     [
         {
-            path: "/",
+            path: "/home/:email",
             name: "Home"
         },
         {

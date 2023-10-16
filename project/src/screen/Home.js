@@ -5,17 +5,19 @@ import CardNew from '../components/card/CardNew'
 import ListCardsMonth from '../components/card/ListCardsMonth'
 import { useGlobalContext } from '../context/context'
 import useTitle from '../hooks/useTitle'
+import { useParams } from 'react-router-dom'
 
 const Home = () => {
-
   useTitle("Home")
+  const { email } = useParams();
+
   const { setShowSearch, refresh } = useGlobalContext();
   const [isOpenNew, setIsOpenNew] = useState(false);
 
   useEffect(() => {
     setShowSearch(true);
     refresh()
-  }, [])
+  }, [email])
 
   return (
     <div className='container align-items-center mb-5'>
@@ -46,7 +48,7 @@ const Home = () => {
           <CardNew setIsOpenNew={setIsOpenNew} />
         </div>
       }
-      <ListCardsMonth />
+      <ListCardsMonth/>
     </div>
   )
 }

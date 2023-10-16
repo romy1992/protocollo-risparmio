@@ -8,17 +8,21 @@ import Error from "./screen/Error";
 import Home from './screen/Home';
 import Month from './screen/Month';
 import Settings from "./screen/Settings";
+import LoginForm from './screen/LoginForm';
+import { useGlobalContext } from './context/context';
 
 function App() {
+  const { isLogged } = useGlobalContext()
   return (
     <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/settings' element={<Settings />} />
-          <Route path='/month/:name' element={<Month />} />
-          <Route path='*' element={<Error />} />
-        </Routes>
+      {isLogged && <Navbar />}
+      <Routes>
+        <Route path='/' element={<LoginForm />} />
+        <Route path='/home/:email' element={<Home />} />
+        <Route path='/settings' element={<Settings />} />
+        <Route path='/month/:name' element={<Month />} />
+        <Route path='*' element={<Error />} />
+      </Routes>
     </BrowserRouter>
   );
 }

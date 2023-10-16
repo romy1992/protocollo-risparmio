@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
-import CardMonth from './CardMonth';
+import React from 'react';
+import { Col, Row } from 'react-bootstrap';
 import { useGlobalContext } from '../../context/context';
+import CardMonth from './CardMonth';
 
 const ListCardsMonth = () => {
   const { months } = useGlobalContext();

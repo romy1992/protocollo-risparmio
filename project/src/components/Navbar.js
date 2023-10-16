@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Form, FormControl } from 'react-bootstrap';
+import { ButtonGroup, Form, FormControl } from 'react-bootstrap';
 import { FaBars } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { AiOutlineLogout } from 'react-icons/ai';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../context/context';
 import links from '../utility/links';
 
 const Navbar = () => {
-    const { setPayload, showSearch } = useGlobalContext();
+    const navigate = useNavigate()
+    const { setPayload, showSearch, setIsLogged } = useGlobalContext();
     const [show, setShow] = useState(false);
     const [query, setQuery] = useState("")
 
@@ -14,6 +16,11 @@ const Navbar = () => {
         const { value } = e.target;
         setQuery(value)
         setPayload(value)
+    }
+
+    const logOut = () => {
+        setIsLogged(false);
+        navigate("/")
     }
 
     return (
@@ -51,14 +58,23 @@ const Navbar = () => {
                         value={query}
                         onChange={(e) => handleSearch(e)} />
                 </Form>
+                <ButtonGroup>
+                    <button
+                        className="btn btn-danger"
+                        type="button"
+                        onClick={() => logOut()}
+                    >
+                        <AiOutlineLogout className="nav-icon" />
+                    </button>
 
-                <button
-                    className="btn navbar-toggler collapsed"
-                    type="button"
-                    onClick={() => setShow(!show)}
-                >
-                    <FaBars className="nav-icon" />
-                </button>
+                    <button
+                        className="btn navbar-toggler collapsed"
+                        type="button"
+                        onClick={() => setShow(!show)}
+                    >
+                        <FaBars className="nav-icon" />
+                    </button>
+                </ButtonGroup>
             </div>
         </nav >
     )
