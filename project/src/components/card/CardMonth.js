@@ -3,7 +3,7 @@ import { Card, Col, FormControl, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context/context';
 
-const CardMonth = ({ id, name: nameMonth, year, des, months }) => {
+const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months }) => {
     const navigate = useNavigate();
     const { setTitle, setShowSearch, deleteCard } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
@@ -83,8 +83,8 @@ const CardMonth = ({ id, name: nameMonth, year, des, months }) => {
             </Card.Header>
             <Card.Body>
                 <Card.Subtitle style={{ fontSize: "14px" }}>
-                    <Card.Text>Spese totali : </Card.Text>
-                    <Card.Text>Risparmio totale : </Card.Text>
+                    <Card.Text>Spese totali : {cost} €</Card.Text>
+                    <Card.Text>Risparmio totale : {difference} €</Card.Text>
                     {
                         !isEdit ?
                             (
