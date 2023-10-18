@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { Button, Container, Form, FormControl, FormGroup } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../context/context";
-import axios from 'axios';
+import instance from "../utility/api";
+import useTitle from "../hooks/useTitle";
 
 const LoginForm = () => {
+    useTitle("Login")
     const { setIsLogged } = useGlobalContext()
     const navigate = useNavigate()
     const [user, setUser] = useState(
@@ -14,9 +16,20 @@ const LoginForm = () => {
     )
 
     const handleSubmit = (e) => {
-        // e.preventdefault()
-        setIsLogged(true)
-        navigate(`home/${user.email}`)
+        e.preventDefault();
+        instance.post("/auth/login", user)
+            .then((response) => {
+                if (response.data) {
+                    setIsLogged(true)
+                    navigate(`home/${user.email}`)
+                } else
+                    alert("Utente o password errate")
+            })
+            .catch((error) => {
+                console.log(error)
+                alert(error)
+            })
+
     }
 
     const handleChange = (e) => {
@@ -25,18 +38,6 @@ const LoginForm = () => {
     }
 
     useEffect(() => {
-        axios.get("http://localhost:8080/login")
-            .then((response) => {
-                axios.post("http://localhost:8080/reset", response.data)
-                    .then((res) => {
-                        console.log(res.data)
-                    }).catch((error) => {
-                        console.log(error)
-                    })
-            })
-            .catch((error) => {
-                console.log(error)
-            })
 
     }, [])
 
@@ -45,12 +46,13 @@ const LoginForm = () => {
             <header>
                 <h4 style={{ fontSize: "20px", fontFamily: "cursive" }}>Login</h4>
             </header>
-            <Form onSubmit={(e) => handleSubmit(e)}>
+            <Form onSubmit={handleSubmit}>
                 <FormGroup className="mt-3">
                     <FormControl
                         required={true}
                         type="email"
                         name="email"
+                        autoComplete="n"
                         placeholder="Email"
                         value={user.email}
                         onChange={handleChange}
@@ -60,6 +62,7 @@ const LoginForm = () => {
                     <FormControl
                         required={true}
                         type="password"
+                        autoComplete="n"
                         name="password"
                         placeholder="Password"
                         value={user.password}
