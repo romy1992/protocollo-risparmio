@@ -1,6 +1,9 @@
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useContext, useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { payload } from "../utility/payloadMonth";
 import reducer from "./reducer";
+import { loginFetch } from "../redux/service/reducerLoginService";
+import { logout } from "../redux/reducers/loginReducer";
 import {
     ADD,
     ADD_CARD,
@@ -25,8 +28,26 @@ const initialState = {
 
 const AppProvider = ({ children }) => {
 
+    /** REDUX */
+
+    const uDispach = useDispatch();
+    const { isLogged, error } = useSelector(state => state.login);
+
+    // Chiama la funzione di login con Redux
+    const globaLoginFetch = (user) => {
+        uDispach(loginFetch("auth/login", user))
+    }
+
+    const globaLogout = () => {
+        uDispach(logout())
+    }
+
+
+    /** REDUX */
+
+
     const [state, dispach] = useReducer(reducer, initialState);
-    const [isLogged, setIsLogged] = useState(false)
+
 
     // Setta il titolo,anno e descrizione del Mese
     const setTitle = (id, body) => {
@@ -124,8 +145,11 @@ const AppProvider = ({ children }) => {
                     setValueEdited,
                     editSalary,
                     addRowNote,
+
                     isLogged,
-                    setIsLogged
+                    error,
+                    globaLoginFetch,
+                    globaLogout
                 }
             }>
             {children}

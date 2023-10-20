@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { ButtonGroup, Form, FormControl } from 'react-bootstrap';
-import { FaBars } from 'react-icons/fa';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { FaBars } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../context/context';
 import links from '../utility/links';
 
 const Navbar = () => {
-    const navigate = useNavigate()
-    const { setPayload, showSearch, setIsLogged } = useGlobalContext();
+    const navigate = useNavigate();
+
+    const { globaLogout, setPayload, showSearch } = useGlobalContext();
     const [show, setShow] = useState(false);
     const [query, setQuery] = useState("")
 
@@ -19,7 +20,7 @@ const Navbar = () => {
     }
 
     const logOut = () => {
-        setIsLogged(false);
+        globaLogout()
         navigate("/")
     }
 
