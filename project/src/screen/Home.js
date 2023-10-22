@@ -48,7 +48,7 @@ const Home = () => {
           <CardNew setIsOpenNew={setIsOpenNew} />
         </div>
       }
-      <ListCardsMonth/>
+      <ListCardsMonth email={email} />
     </div>
   )
 }

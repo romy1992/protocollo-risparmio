@@ -3,15 +3,12 @@ import { Card, Col, Form, FormControl, FormGroup, Row } from 'react-bootstrap';
 import { BiReset } from 'react-icons/bi';
 import { IoIosAdd } from 'react-icons/io';
 import { useGlobalContext } from '../../context/context';
+import { month } from '../../model/containerModel';
 
 const CardNew = ({ setIsOpenNew }) => {
-    const { addnewCard, months } = useGlobalContext();
-    const [newCard, setNewCard] = useState
-        (
-            {
-                name: "", year: "", des: "", leisure: [], fixedMonthlyCredit: []
-            }
-        )
+    const { stateContainer, globalUpdateContainer } = useGlobalContext();
+    const { container } = stateContainer;
+    const [newCard, setNewCard] = useState(month)
 
     const handleNewCard = (e) => {
         const { name, value } = e.target;
@@ -19,17 +16,21 @@ const CardNew = ({ setIsOpenNew }) => {
     }
 
     const handleReset = () => {
-        setNewCard({ ...newCard, name: "", year: "", des: "" })
+        setNewCard({ ...newCard, title: "", note: "", des: "" })
     };
 
     const addClickCard = () => {
-        console.log(months)
-        console.log(newCard)
-        const o = months.filter(el => el.name === newCard.name &&
-            el.year === newCard.year)
-        console.log(o.length===0)
-        if (newCard.name && o.length === 0) {
-            addnewCard(newCard)
+        const o = container.months.filter(el => el.title === newCard.title &&
+            el.note === newCard.note)
+        if (newCard.title && o.length === 0) {
+            // Creo un nuovo array dall'originale
+            const array = Array.from(container.months);
+            // Aggiungo la nuova card
+            array.push(newCard)
+            // Creo il nuovo contenitore
+            const newContainer = { ...container, months: array }
+            // Aggiorno
+            globalUpdateContainer(newContainer)
             handleReset();
             setIsOpenNew(false)
         } else
@@ -44,18 +45,18 @@ const CardNew = ({ setIsOpenNew }) => {
                     <FormGroup>
                         <FormControl
                             className='mt-2'
-                            name='name'
+                            name='title'
                             type='text'
                             placeholder='Nome Raccoglitore *'
-                            value={newCard.name}
+                            value={newCard.title}
                             onChange={handleNewCard}
                         />
                         <FormControl
                             className='mt-2'
-                            name='year'
+                            name='note'
                             type='text'
                             placeholder='Valore numerale tipo : anno'
-                            value={newCard.year}
+                            value={newCard.note}
                             onChange={handleNewCard}
                         />
                     </FormGroup>

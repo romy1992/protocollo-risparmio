@@ -6,6 +6,7 @@ import { AiFillEdit, AiOutlineCheckCircle } from 'react-icons/ai';
 const Salary = ({ month }) => {
     const { editSalary } = useGlobalContext();
     const [isDisabilited, setIsDisabilited] = useState(true)
+    const [changeSalary, editChangeSalary] = useState(month.salary)
 
     // Salva e disabilita il bottone
     const updateSalary = () => {
@@ -15,13 +16,14 @@ const Salary = ({ month }) => {
     // Handle Per l'onChange dello stipendio mensile
     const handelSalary = (e) => {
         const { value } = e.target;
-        editSalary(month.id, value);
+        editChangeSalary(value)
+        editSalary(month.idUMonth, value);
     }
 
     return (
         <Row className='mt-5 text-center'>
             <Col md={2} className='mt-1'>
-                <h5 className='text-center'>Stipendio : {month.salary} €</h5>
+                <h5 className='text-center'>Stipendio : {changeSalary} €</h5>
             </Col>
             <Col className='mt-1'>
                 <button
@@ -40,8 +42,8 @@ const Salary = ({ month }) => {
                     id='salary'
                     className='form-control'
                     type='number'
-                    placeholder={month.salary}
-                    value={month.salary || 0}
+                    placeholder={changeSalary}
+                    value={changeSalary || 0}
                     onChange={handelSalary}
                 />
             </Col>

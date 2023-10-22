@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import { useGlobalContext } from './context/context';
 import "./index.css";
 import Error from "./screen/Error";
 import Home from './screen/Home';
@@ -12,10 +12,10 @@ import Month from './screen/Month';
 import Settings from "./screen/Settings";
 
 function App() {
-  const { isLogged } = useSelector(state => state.login)
+  const { stateLogin } = useGlobalContext()
   return (
     <BrowserRouter>
-      {isLogged && <Navbar />}
+      {stateLogin.isLogged && <Navbar />}
       <Routes>
         <Route path='/' element={<LoginForm />} />
         <Route path='/home/:email' element={<Home />} />

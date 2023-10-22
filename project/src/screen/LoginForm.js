@@ -8,7 +8,8 @@ import useTitle from "../hooks/useTitle";
 const LoginForm = () => {
     useTitle("Login")
 
-    const { isLogged, error, globaLoginFetch } = useGlobalContext();
+    const { stateLogin, globaLoginFetch } = useGlobalContext();
+    const { isLogged, error } = stateLogin;
     const navigate = useNavigate();
     const [user, setUser] = useState(
         {
@@ -28,7 +29,10 @@ const LoginForm = () => {
 
     // Controlla se è tutto ok è va avanti con la pagina
     useEffect(() => {
-        if (isLogged) navigate(`home/${user.email}`)
+        if (isLogged) {
+            localStorage.setItem("user", user.email)
+            navigate(`home/${user.email}`)
+        }
     }, [isLogged])
 
     // Se c'è un errore va nella pagina di errore

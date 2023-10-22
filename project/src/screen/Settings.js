@@ -5,12 +5,14 @@ import { TABELLA_SPESE_FISSE } from '../context/state'
 import useTitle from '../hooks/useTitle'
 
 const Settings = () => {
-  
+
   useTitle("Settings")
-  const { setShowSearch, fixedCost } = useGlobalContext()
+  const { setShowSearch, fixedCost, isAuth } = useGlobalContext()
 
   useEffect(() => {
-     setShowSearch(false)
+    // Per tenere lo stato di autenticazione attivo
+    isAuth()
+    setShowSearch(false)
   }, [])
 
   return (

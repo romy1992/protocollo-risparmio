@@ -8,7 +8,7 @@ const initialState = {
     }
 }
 
-const login = createSlice(
+const loginReducer = createSlice(
     {
         name: "login",
         initialState,
@@ -31,9 +31,9 @@ export const {
     isAuthUser,
     catchError,
     logout
-} = login.actions;
+} = loginReducer.actions;
 // Prendo il reducer nel conternitore login
-const { reducer } = login;
+const { reducer } = loginReducer;
 
 export default reducer;
 

@@ -9,14 +9,14 @@ import links from '../utility/links';
 const Navbar = () => {
     const navigate = useNavigate();
 
-    const { globaLogout, setPayload, showSearch } = useGlobalContext();
+    const { globaLogout, globalSearchInLikeMonths, showSearch } = useGlobalContext();
     const [show, setShow] = useState(false);
     const [query, setQuery] = useState("")
 
     const handleSearch = (e) => {
         const { value } = e.target;
         setQuery(value)
-        setPayload(value)
+        globalSearchInLikeMonths(value)
     }
 
     const logOut = () => {

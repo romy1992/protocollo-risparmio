@@ -1,18 +1,14 @@
-import { createContext, useContext, useReducer } from "react";
+import { createContext, useContext, useReducer, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { isAuthUser, logout } from "../redux/reducers/loginReducer";
+import { searchContainer, searchInLikeMonths, updateContainer } from "../redux/service/reducerContainerService";
+import { loginFetch } from "../redux/service/reducerLoginService";
 import { payload } from "../utility/payloadMonth";
 import reducer from "./reducer";
-import { loginFetch } from "../redux/service/reducerLoginService";
-import { logout } from "../redux/reducers/loginReducer";
 import {
     ADD,
-    ADD_CARD,
-    DELETE_CARD,
     EDIT_SALARY,
-    SEARCH,
-    SET_SHOW_SEARCH,
     UPDATE,
-    UPDATE_TITLE,
     UPDATE_TOTAL,
     _single
 } from "./state";
@@ -23,23 +19,70 @@ const initialState = {
     payload: payload,
     months: payload.months,
     fixedCost: payload.fixedCost,
-    showSearch: true
 }
 
 const AppProvider = ({ children }) => {
 
+    const [showSearch, setShowSearch] = useState(true);
+
     /** REDUX */
 
     const uDispach = useDispatch();
-    const { isLogged, error } = useSelector(state => state.login);
+    const stateLogin = useSelector(state => state.loginReducer);
+    const stateContainer = useSelector(state => state.containerReducer);
+    const currentUser = stateContainer.container.codUser;
 
     // Chiama la funzione di login con Redux
     const globaLoginFetch = (user) => {
         uDispach(loginFetch("auth/login", user))
     }
 
+    // Check Auth Manual
+    const isAuth = () => {
+        uDispach(isAuthUser(true))
+    }
+
+    // Semplice logout
     const globaLogout = () => {
         uDispach(logout())
+        localStorage.removeItem("user")
+    }
+
+    // Cerca il container in base alla mail
+    const globalSearchContainer = (email) => {
+        uDispach(searchContainer(`container/search/${email}`))
+    }
+
+    // Update generale del container
+    const globalUpdateContainer = (payload) => {
+        uDispach(updateContainer("container/update", payload))
+    }
+
+    // Update per modifiche al mese
+    const updateMounths = (container, body) => {
+        let a = container.months.map((item) => {
+            if (item.idUMonth === body.idUMonth) {
+                item = { ...item, ...body }
+            }
+            return item
+        })
+        globalUpdateContainer({ ...container, months: a })
+    }
+
+    // Elimina la Card del mese
+    const deleteCard = (id, container) => {
+        let a = container.months.filter(el => el.idUMonth !== id);
+        uDispach(updateContainer("container/update", { ...container, months: a }))
+    }
+
+    // Setta il payload in base alla query di ricerca
+    const globalSearchInLikeMonths = (value) => {
+        uDispach(searchInLikeMonths("container/searchInLike", value, stateContainer.container.codUser))
+    }
+
+    // Modifica lo stipendio mensile
+    const editSalary = (idUMonth, salary) => {
+        updateMounths(stateContainer.container, { idUMonth, salary })
     }
 
 
@@ -48,31 +91,6 @@ const AppProvider = ({ children }) => {
 
     const [state, dispach] = useReducer(reducer, initialState);
 
-
-    // Setta il titolo,anno e descrizione del Mese
-    const setTitle = (id, body) => {
-        dispach({ type: UPDATE_TITLE, payload: { id, body } })
-    }
-
-    // Elimina la Card del mese
-    const deleteCard = (id) => {
-        dispach({ type: DELETE_CARD, payload: id })
-    }
-
-    const addnewCard = (card) => {
-        dispach({ type: ADD_CARD, payload: card })
-    }
-
-    // Setta il payload in base alla query di ricerca
-    const setPayload = (value) => {
-        dispach({ type: SEARCH, payload: value })
-    }
-
-    // Applica un booleano per mostrare la barra di ricerca
-    const setShowSearch = (value) => {
-        dispach({ type: SET_SHOW_SEARCH, payload: value })
-        // state.showSearch = value
-    }
 
     // Cancella una singola riga
     const deleteRow = (name, title, item) => {
@@ -106,15 +124,6 @@ const AppProvider = ({ children }) => {
         })
     }
 
-    // Modifica lo stipendio mensile
-    const editSalary = (id, value) => {
-        dispach({
-            type: EDIT_SALARY,
-            payload: { id, value }
-        })
-    }
-
-
     // Aggiunge la riga con note e price
     const addRowNote = (nameMonth, title, row) => {
         dispach({
@@ -133,12 +142,8 @@ const AppProvider = ({ children }) => {
             value={
                 {
                     ...state,
-                    setTitle,
                     somTotal,
                     deleteCard,
-                    addnewCard,
-                    setPayload,
-                    setShowSearch,
                     deleteRow,
                     deleteAllRow,
                     refresh,
@@ -146,10 +151,10 @@ const AppProvider = ({ children }) => {
                     editSalary,
                     addRowNote,
 
-                    isLogged,
-                    error,
-                    globaLoginFetch,
-                    globaLogout
+                    currentUser,
+                    showSearch, setShowSearch,
+                    stateLogin, isAuth, globaLoginFetch, globaLogout,
+                    stateContainer, globalSearchContainer, globalUpdateContainer, updateMounths, globalSearchInLikeMonths
                 }
             }>
             {children}
@@ -160,6 +165,7 @@ const AppProvider = ({ children }) => {
 const useGlobalContext = () => {
     return useContext(AppContext);
 }
+
 
 export { AppProvider, useGlobalContext };
 

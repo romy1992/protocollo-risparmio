@@ -22,7 +22,7 @@ export const loginFetch = (path, body) => async (dispath) => {
         if (!data)
             dispath(catchError(
                 {
-                    message: "Utente o password errate!",
+                    message: "Utente o password errate...",
                     isError: true
                 }
             ))
@@ -31,17 +31,9 @@ export const loginFetch = (path, body) => async (dispath) => {
     } catch (error) {
         dispath(catchError(
             {
-                message: error,
+                message: "Errore Server...",
                 isError: true
             }
         ))
     }
 }
-
-
-
-// SEARCH USER
-// export const searchUserByEmail = (path) => async (dispath) => {
-//     const response = await instance.get(path);
-//     dispath(setUserLogin(response.data))
-// }

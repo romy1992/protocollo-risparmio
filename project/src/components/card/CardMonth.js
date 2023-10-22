@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Col, FormControl, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context/context';
 
-const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months }) => {
+const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) => {
     const navigate = useNavigate();
-    const { setTitle, setShowSearch, deleteCard } = useGlobalContext();
+
+    const { globalUpdateMounths, deleteCard, setShowSearch, isAuth } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
-    const [body, setBody] = useState(
-        {
-            nameMonth, year, des
-        }
-    )
+    const [body, setBody] = useState({
+        idUMonth, title, note, des
+    })
 
     const handleCardMonth = (value) => {
         navigate(`/month/${value}`)
@@ -20,32 +19,35 @@ const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months })
 
     const handleChangeName = (e) => {
         const { name, value } = e.target
-        setBody({
-            ...body, [name]: value
-        })
+        setBody({ ...body, idUMonth, [name]: value })
     }
 
     const updateClick = () => {
         setIsEdit(!isEdit)
-        if (checkUpdate(months))
-            setTitle(id, body);
-        else {
-            setBody({
-                ...body, nameMonth, year, des
-            })
+        if (checkUpdate(container.months)) {
+            // Modifica il titoli e des del mese
+            globalUpdateMounths(container, body)
+            setBody({ ...body })
+        } else {
+            setBody({ ...body })
             return alert("Nome/Anno già presente..Riprova!!")
         }
     }
 
     // Controlla i vari stati prima dell'aggiornamento del nome
     const checkUpdate = (months) => {
-        const o = months.filter(el => el.id === id)[0];
-        const oArray = months.filter(el => (el.name === body.nameMonth && el.year === body.year));
+        const o = months.filter(el => el.idUMonth === idUMonth)[0];
+        const oArray = months.filter(el => (el.title === body.title && el.note === body.note));
         return (
             (oArray.length === 0)
-            || (o.name === body.nameMonth && o.year === body.year)
+            || (o.title === body.title && o.note === body.note)
         )
     }
+
+    // Per tenere lo stato di autenticazione attivo
+    useEffect(() => {
+        isAuth()
+    }, [])
 
     return (
 
@@ -55,19 +57,19 @@ const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months })
                     isEdit ? (
                         <>
                             <FormControl
-                                placeholder={body.nameMonth}
-                                value={body.nameMonth}
-                                id='name'
+                                placeholder="Inserisci il titolo"
+                                value={body.title}
+                                id='title'
                                 type='text'
-                                name='nameMonth'
+                                name='title'
                                 onChange={(e) => handleChangeName(e)}
                             />
                             <FormControl
                                 type='text'
-                                placeholder={body.year}
-                                value={body.year || 0}
-                                id='year'
-                                name='year'
+                                placeholder="Inserisci un sub titolo"
+                                value={body.note}
+                                id='note'
+                                name='note'
                                 onChange={(e) => handleChangeName(e)}
                             />
                         </>
@@ -75,7 +77,7 @@ const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months })
                         (
                             <>
                                 <Card.Title className='mt-1 font-family-sans-serif display-10 text-center align-items-center'>
-                                    {nameMonth} {(year || year > 0) && year}
+                                    {title} {note}
                                 </Card.Title>
                             </>
                         )
@@ -93,7 +95,7 @@ const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months })
                             :
                             (
                                 <FormControl
-                                    placeholder={body.des}
+                                    placeholder="Inserisci una descrizione della nota"
                                     value={body.des}
                                     id='des'
                                     name='des'
@@ -109,7 +111,7 @@ const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months })
                             disabled={isEdit}
                             type='button'
                             className='btn btn-md btn-outline-info'
-                            onClick={() => handleCardMonth(nameMonth)}
+                            onClick={() => handleCardMonth(title)}
                         >
                             Accedi
                         </button>
@@ -140,7 +142,7 @@ const CardMonth = ({ id, name: nameMonth, year, des, difference, cost, months })
                             disabled={isEdit}
                             type='button'
                             className='btn btn-md btn-outline-danger'
-                            onClick={() => deleteCard(id)}
+                            onClick={() => deleteCard(idUMonth, container)}
                         >
                             Elimina
                         </button>

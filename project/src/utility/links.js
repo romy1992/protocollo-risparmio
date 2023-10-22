@@ -1,8 +1,10 @@
 
+const currentUser = localStorage.getItem("user");
+
 const links =
     [
         {
-            path: "/home/:email",
+            path: `/home/${currentUser}`,
             name: "Home"
         },
         {

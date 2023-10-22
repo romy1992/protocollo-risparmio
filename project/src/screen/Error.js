@@ -2,10 +2,11 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { catchError } from '../redux/reducers/loginReducer';
+import ErrorMode from '../components/ErrorMode';
 
 
 const Error = () => {
-  const { error } = useSelector(state => state.login)
+  const { error } = useSelector(state => state.loginReducer)
   const navigate = useNavigate();
   const dispath = useDispatch();
 
@@ -18,9 +19,8 @@ const Error = () => {
   }, [])
 
   return (
-    <div className='container m-auto text-center'>
-      Errore :
-      <p style={{ color: "red", fontFamily: "cursive", fontSize: "15px" }}> {error.message} </p>
+    <div className='container m-auto text-center mt-2'>
+      Errore : <ErrorMode>{error.message}</ErrorMode>
     </div>
   )
 }
