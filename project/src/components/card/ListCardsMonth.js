@@ -21,8 +21,8 @@ const ListCardsMonth = ({ email }) => {
               {container &&
                 container.months.length > 0 ?
                 (
-                  container.months.map((el, index) => {
-                    return <Col key={index} md={6}>
+                  container.months.slice().reverse().map((el, index) => {
+                    return <Col key={index} md={4}>
                       <CardMonth {...el} container={container} />
                     </Col>
                   })

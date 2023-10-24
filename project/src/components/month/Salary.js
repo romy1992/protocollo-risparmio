@@ -42,8 +42,8 @@ const Salary = ({ month }) => {
                     id='salary'
                     className='form-control'
                     type='number'
-                    placeholder={changeSalary}
-                    value={changeSalary || 0}
+                    placeholder={changeSalary|0}
+                    value={changeSalary}
                     onChange={handelSalary}
                 />
             </Col>

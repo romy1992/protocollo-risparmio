@@ -1,24 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Col, FormControl, Row } from "react-bootstrap";
 import { useGlobalContext } from "../../context/context";
+import { TiDeleteOutline } from "react-icons/ti";
+import { CiEdit, CiSaveDown1 } from "react-icons/ci";
 
-const RowMonth = React.memo((
+const RowMonth = React.memo(( 
     {
         item,
-        isEdit,
-        nameMonth,
+        idUMonth,
         title,
         isOpenRow,
         buttons
     }) => {
 
-    const { deleteRow, setValueEdited } = useGlobalContext();
+    const { deleteRow, editRow } = useGlobalContext();
+    const [isEdit, setIsEdit] = useState(false)
+    const [editBody, setEditBody] = useState(item)
 
 
-    const handleEditChange = (e, item) => {
-        const { name, value } = e.target;
-        setValueEdited(name, value, item, nameMonth, title)
+    const editAndUpdate = () => {
+        setIsEdit(!isEdit)
+        editRow(idUMonth, editBody, title)
     }
+
+    const handleEditChange = (e) => {
+        const { name, value } = e.target;
+        setEditBody({ ...editBody, [name]: value })
+    }
+
+    useEffect(() => {
+        setEditBody(item)
+    }, [])
+
 
     return (
         <>
@@ -26,14 +39,14 @@ const RowMonth = React.memo((
                 <td className='text-center'>
                     {
                         !isEdit ?
-                            (item.note) :
+                            (editBody.note) :
                             (
                                 <FormControl
                                     name="note"
                                     type="text"
-                                    placeholder={item.note}
-                                    value={item.note}
-                                    onChange={(e) => handleEditChange(e, item)}
+                                    placeholder={editBody.note}
+                                    value={editBody.note}
+                                    onChange={handleEditChange}
                                 />
                             )
                     }
@@ -41,14 +54,14 @@ const RowMonth = React.memo((
                 <td className='text-center'>
                     {
                         !isEdit ?
-                            (<>{item.price} €</>) :
+                            (<>{editBody.price} €</>) :
                             (
                                 <FormControl
                                     name="price"
                                     type="number"
-                                    placeholder={item.note}
-                                    value={item.price}
-                                    onChange={(e) => handleEditChange(e, item)}
+                                    placeholder={editBody.price || 0}
+                                    value={editBody.price}
+                                    onChange={handleEditChange}
                                 />
                             )
                     }
@@ -57,12 +70,37 @@ const RowMonth = React.memo((
                     buttons &&
                     <td className='text-center'>
                         <Row>
+                            {
+                                !isOpenRow && isEdit &&
+                                <Col>
+                                    <button
+                                        onClick={editAndUpdate}
+                                        type='button'
+                                        className='btn btn-md btn-success'>
+                                        <CiSaveDown1 />
+                                    </button>
+                                </Col>
+                            }
+                            {
+                                !isEdit &&
+                                <Col>
+                                    <button
+                                        disabled={isOpenRow}
+                                        onClick={() => setIsEdit(!isEdit)}
+                                        type='button'
+                                        className='btn btn-md btn-outline-warning'>
+                                        <CiEdit />
+                                    </button>
+                                </Col>
+                            }
                             <Col>
                                 <button
                                     disabled={isEdit || isOpenRow}
-                                    onClick={() => deleteRow(nameMonth, title, item)}
+                                    onClick={() => deleteRow(idUMonth, title, item)}
                                     type='button'
-                                    className='btn btn-md btn-danger'>Elimina</button>
+                                    className='btn btn-md btn-outline-danger'>
+                                    <TiDeleteOutline />
+                                </button>
                             </Col>
                         </Row>
                     </td>

@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Salary from '../components/month/Salary';
 import TableMonth from '../components/month/TableMonth';
 import { useGlobalContext } from '../context/context';
 import { TABELLA_ACCREDITI, TABELLA_SPESE } from '../context/state';
 import useTitle from '../hooks/useTitle';
-import Error from './Error'
+import Error from './Error';
 
 const Month = () => {
   const { name } = useParams();
   useTitle(`Mese di ${name}`)
 
-  const { stateContainer, setShowSearch, isAuth } = useGlobalContext();
-  const { container } = stateContainer;
+  const { container, setShowSearch, isAuth } = useGlobalContext();
   const [month, setMonth] = useState();
-  const navigate = useNavigate();
+
 
   useEffect(() => {
     const ms = container.months.filter((el) => el.title === name);
@@ -22,7 +21,8 @@ const Month = () => {
       setMonth(container.months.filter((el) => el.title === name)[0])
     setShowSearch(false)
     isAuth()
-  }, [name, month && month.salary, month && month.cost, month])
+  }, [name, container])
+  // month && month.salary, month && month.cost, month
 
   if (month)
     return (

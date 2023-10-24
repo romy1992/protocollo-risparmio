@@ -11,13 +11,17 @@ const Home = () => {
   useTitle("Home")
   const { email } = useParams();
 
-  const { setShowSearch, refresh } = useGlobalContext();
+  const { setShowSearch, isAuth } = useGlobalContext();
   const [isOpenNew, setIsOpenNew] = useState(false);
 
   useEffect(() => {
     setShowSearch(true);
-    refresh()
   }, [email])
+
+  useEffect(() => {
+    if (localStorage.getItem("user"))
+      isAuth(true)
+  }, [])
 
   return (
     <div className='container align-items-center mb-5'>

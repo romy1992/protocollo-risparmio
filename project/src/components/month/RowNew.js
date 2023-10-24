@@ -1,14 +1,16 @@
 import { memo, useEffect, useState } from "react";
 import { Col, FormControl, Row } from "react-bootstrap";
 import { useGlobalContext } from "../../context/context";
+import { GiConfirmed } from "react-icons/gi";
+import { GrPowerReset } from "react-icons/gr";
 
-const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, nameMonth, title }) => {
+const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
 
     const { addRowNote } = useGlobalContext();
     const [body, setBody] = useState(
         {
             note: "",
-            price: null
+            price: 0
         }
     )
 
@@ -22,13 +24,13 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, nameMonth, title }) => {
             return alert("Devi inserire sia la nota che il prezzo!!")
         } else {
             setIsOpenRow(!isOpenRow)
-            addRowNote(nameMonth, title, body)
-            setBody({ note: '', price: null })
+            addRowNote(id, title, body)
+            setBody({ note: '', price: 0 })
         }
     }
 
     useEffect(() => {
-        setBody({ note: "", price: null })
+        setBody({ note: "", price: 0 })
     }, [isOpenRow])
 
     return (
@@ -58,14 +60,18 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, nameMonth, title }) => {
                             disabled={isEdit}
                             onClick={addRow}
                             type='button'
-                            className='btn btn-md btn-success'>Conferma</button>
+                            className='btn btn-md btn-success'>
+                            <GiConfirmed />
+                        </button>
                     </Col>
                     <Col>
                         <button
                             disabled={isEdit}
                             onClick={() => setIsOpenRow(!isOpenRow)}
                             type='button'
-                            className='btn btn-md btn-warning'>Annulla</button>
+                            className='btn btn-md btn-warning'>
+                            <GrPowerReset />
+                        </button>
                     </Col>
                 </Row>
             </td>

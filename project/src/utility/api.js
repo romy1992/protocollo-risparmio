@@ -6,7 +6,7 @@ const instance = axios.create(
     {
         baseURL: process.env.REACT_APP_BASE_URL,
         headers: {
-            "Content-Type": "application/json",
+            // "Content-Type": "application/json",
             //     "Accept-Version": "v1",
             //     "Authorization": process.env.REACT_APP_UNSPLASH_CLIENT_ID,
         }

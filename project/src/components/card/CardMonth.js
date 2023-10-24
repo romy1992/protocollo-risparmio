@@ -2,11 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Card, Col, FormControl, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context/context';
+import { CiEdit, CiSaveDown1 } from "react-icons/ci";
+import { TiDeleteOutline } from "react-icons/ti";
+import { ImEnter } from "react-icons/im";
 
 const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) => {
     const navigate = useNavigate();
 
-    const { globalUpdateMounths, deleteCard, setShowSearch, isAuth } = useGlobalContext();
+    const { updateMounths, deleteCard, setShowSearch, isAuth } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
     const [body, setBody] = useState({
         idUMonth, title, note, des
@@ -26,7 +29,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
         setIsEdit(!isEdit)
         if (checkUpdate(container.months)) {
             // Modifica il titoli e des del mese
-            globalUpdateMounths(container, body)
+            updateMounths(body)
             setBody({ ...body })
         } else {
             setBody({ ...body })
@@ -51,7 +54,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
 
     return (
 
-        <Card className='shadow-lg rounded text-bg-light mt-3 '>
+        <Card className='shadow-lg rounded text-bg-light mt-3'>
             <Card.Header>
                 {
                     isEdit ? (
@@ -113,7 +116,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
                             className='btn btn-md btn-outline-info'
                             onClick={() => handleCardMonth(title)}
                         >
-                            Accedi
+                            <ImEnter />
                         </button>
                     </Col>
                     {
@@ -124,7 +127,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
                                     className='btn btn-md btn-outline-warning'
                                     onClick={() => setIsEdit(!isEdit)}
                                 >
-                                    Modifica
+                                    <CiEdit />
                                 </button>
                             </Col>) : (
                             <Col md={4} className='mt-2'>
@@ -133,7 +136,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
                                     className='btn btn-md btn-outline-success'
                                     onClick={updateClick}
                                 >
-                                    Salva
+                                    <CiSaveDown1 />
                                 </button>
                             </Col>)
                     }
@@ -144,7 +147,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
                             className='btn btn-md btn-outline-danger'
                             onClick={() => deleteCard(idUMonth, container)}
                         >
-                            Elimina
+                            <TiDeleteOutline />
                         </button>
                     </Col>
                 </Row>

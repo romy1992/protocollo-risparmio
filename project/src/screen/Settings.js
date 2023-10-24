@@ -7,8 +7,7 @@ import useTitle from '../hooks/useTitle'
 const Settings = () => {
 
   useTitle("Settings")
-  const { setShowSearch, fixedCost, isAuth } = useGlobalContext()
-
+  const { container, setShowSearch, isAuth } = useGlobalContext();
   useEffect(() => {
     // Per tenere lo stato di autenticazione attivo
     isAuth()
@@ -20,7 +19,7 @@ const Settings = () => {
       {/* Tabelle per le spese fisse*/}
       <TableMonth
         title={TABELLA_SPESE_FISSE}
-        obj={fixedCost}
+        obj={container.fixedCost && container.fixedCost.costs}
         arrayHeader={["Nota Spesa Fissa", "Costo Spesa Fissa"]}
         buttons={true}
       />

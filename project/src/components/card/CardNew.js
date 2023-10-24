@@ -6,8 +6,7 @@ import { useGlobalContext } from '../../context/context';
 import { month } from '../../model/containerModel';
 
 const CardNew = ({ setIsOpenNew }) => {
-    const { stateContainer, globalUpdateContainer } = useGlobalContext();
-    const { container } = stateContainer;
+    let { container, globalUpdateContainer } = useGlobalContext();
     const [newCard, setNewCard] = useState(month)
 
     const handleNewCard = (e) => {
@@ -25,6 +24,14 @@ const CardNew = ({ setIsOpenNew }) => {
         if (newCard.title && o.length === 0) {
             // Creo un nuovo array dall'originale
             const array = Array.from(container.months);
+            // Recupero il costo fisso
+            let cost = container
+                && container.fixedCost
+                && container.fixedCost.totalFixedCost ?
+                container.fixedCost.totalFixedCost : 0
+            // Lo applico alla nuova card 
+            newCard.cost = cost
+            newCard.difference = - cost
             // Aggiungo la nuova card
             array.push(newCard)
             // Creo il nuovo contenitore
