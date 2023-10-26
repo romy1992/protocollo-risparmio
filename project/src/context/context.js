@@ -154,16 +154,28 @@ const AppProvider = ({ children }) => {
             let map = container.months.map(el => {
                 if (el.idUMonth === idUMonth) {
                     if (title === TABELLA_SPESE) {
-                        el = { ...el, leisure: [{ ...body }] }
+                        let a = el.leisure.map(l => {
+                            if (l.idLeisure === body.idLeisure) l = { ...l, ...body }
+                            return l;
+                        })
+                        el = { ...el, leisure: a }
                     } else if (title === TABELLA_ACCREDITI) {
-                        el = { ...el, fixedMonthlyCredit: [{ ...body }] }
+                        let a = el.fixedMonthlyCredit.map(l => {
+                            if (l.idFixedMonthlyCredit === body.idFixedMonthlyCredit) l = { ...l, ...body }
+                            return l;
+                        })
+                        el = { ...el, fixedMonthlyCredit: a }
                     }
                 }
                 return el;
             })
             globalUpdateContainer(calculateTotal({ ...container, months: map }, idUMonth))
         } else {
-            globalUpdateContainer(calculateTotal({ ...container, fixedCost: { ...container.fixedCost, costs: [{ ...body }] } }, idUMonth))
+            let a = container.fixedCost.costs.map(c => {
+                if (c.idCost === body.idCost) c = { ...c, ...body }
+                return c;
+            })
+            globalUpdateContainer(calculateTotal({ ...container, fixedCost: { ...container.fixedCost, costs: a } }, idUMonth))
         }
     }
 
@@ -216,7 +228,7 @@ const AppProvider = ({ children }) => {
 
     // Somma i totali
     const somTotal = (obj) => {
-        return obj.reduce((a, b) => a + parseFloat(b.price), 0)
+        return obj && obj.reduce((a, b) => a + parseFloat(b.price), 0)
     }
 
 
@@ -242,4 +254,5 @@ const useGlobalContext = () => {
 }
 
 
-export { AppProvider, useGlobalContext }
+export { AppProvider, useGlobalContext };
+
