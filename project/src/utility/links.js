@@ -1,6 +1,6 @@
 
 const currentUser = localStorage.getItem("user");
-console.log(currentUser)
+
 const links =
     [
         {

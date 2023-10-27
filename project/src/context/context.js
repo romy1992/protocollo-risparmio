@@ -111,9 +111,9 @@ const AppProvider = ({ children }) => {
             globalUpdateContainer(calculateTotal({ ...container, months: map }, idUMonth))
         } else {
             let contInput = container;
-            if (contInput.fixedCost === null)
+            if (contInput?.fixedCost === null)
                 contInput = { ...contInput, fixedCost: { costs: [] } }
-            let co = contInput.fixedCost.costs ? Array.from(contInput.fixedCost.costs) : [];
+            let co = contInput?.fixedCost?.costs ? Array.from(contInput.fixedCost.costs) : [];
             body = { ...body, idLeisure: newDataRef.key }
             co.push(body)
             const fs = { ...contInput.fixedCost, costs: co }
@@ -196,14 +196,14 @@ const AppProvider = ({ children }) => {
 
     const calculateTotal = (containerInput, idUMonth, salary) => {
         // Toale spese fisse al mese
-        let totalFixedCost = container.fixedCost && container.fixedCost.costs ? somTotal(containerInput.fixedCost.costs) : 0;
+        let totalFixedCost = container?.fixedCost?.costs ? somTotal(containerInput.fixedCost.costs) : 0;
         let editFixedCost = { ...containerInput.fixedCost, totalFixedCost }
         if (idUMonth) {
-            let months = Array.from(containerInput.months)
+            let months = Array.from(containerInput?.months)
             // Cerca il mese 
-            let month = containerInput.months.filter(el => el && el.idUMonth === idUMonth)[0];
+            let month = containerInput?.months.filter(el => el?.idUMonth === idUMonth)[0];
             // Rimuovo dal months il month vecchio
-            months = months.filter(el => el && el.idUMonth !== idUMonth)
+            months = months.filter(el => el?.idUMonth !== idUMonth)
             // Per aggionare lo stipendio
             if (salary) {
                 salary = parseInt(salary)
@@ -223,7 +223,7 @@ const AppProvider = ({ children }) => {
             months.push(month)
             return { ...containerInput, fixedCost: { ...editFixedCost }, months }
         } else {
-            let listMounths = containerInput.months ? Array.from(containerInput.months) : [];
+            let listMounths = containerInput?.months ? Array.from(containerInput.months) : [];
             let editMonths = []
             listMounths.forEach(month => {
                 // Totale Spese idMese

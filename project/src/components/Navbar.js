@@ -59,15 +59,7 @@ const Navbar = () => {
                     </div>
 
                 </div>
-                {/* <div className="container-fluid">
-                    <FormControl
-                        style={{ display: showSearch ? `block` : `none` }}
-                        type='search'
-                        placeholder='Cerca'
-                        value={query}
-                        onChange={(e) => handleSearch(e)} />
-                </div> */}
-                <ButtonGroup style={{marginTop: showSearch ? `10px` : ``}}>
+                <ButtonGroup style={{ marginTop: showSearch ? `10px` : `` }}>
                     <button
                         className="btn btn-danger"
                         type="button"

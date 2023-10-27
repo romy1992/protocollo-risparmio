@@ -19,7 +19,7 @@ const Settings = () => {
       {/* Tabelle per le spese fisse*/}
       <TableMonth
         title={TABELLA_SPESE_FISSE}
-        obj={container.fixedCost && container.fixedCost.costs}
+        obj={container?.fixedCost?.costs}
         arrayHeader={["Nota Spesa Fissa", "Costo Spesa Fissa"]}
         buttons={true}
       />

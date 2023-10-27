@@ -16,7 +16,7 @@ const Month = () => {
 
 
   useEffect(() => {
-    const ms = container.months.filter((el) => el.title === name);
+    const ms = container?.months?.filter((el) => el.title === name);
     if (ms.length > 0)
       setMonth(container.months.filter((el) => el.title === name)[0])
     setShowSearch(false)

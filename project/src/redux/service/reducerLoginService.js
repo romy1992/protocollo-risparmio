@@ -6,7 +6,8 @@ import { catchError, isAuthUser } from "../reducers/loginReducer";
     Altrimenti in un file separato come questo
 */
 
-export const loginFetch = (body) => async (dispath) => {
+export const loginFetch = (body) => async (dispath, getState) => {
+    // console.log(getState())
     dispath(catchError(
         {
             message: "",

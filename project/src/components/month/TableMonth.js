@@ -18,7 +18,7 @@ const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader,
             const totale = obj.reduce((a, b) => a + parseFloat(b.price), 0)
             setTotal(totale)
         }
-    }, [id, salary, obj && obj, obj && obj.length])
+    }, [id, salary, obj?.length])
 
 
     return (
