@@ -5,21 +5,21 @@ import { useGlobalContext } from "../context/context";
 import useTitle from "../hooks/useTitle";
 
 
+
 const LoginForm = () => {
     useTitle("Login")
+
+    //const newDataRef = dataRef.push();// Inserisci dati
+    //const newKey = newDataRef.key; // Ottieni la chiave primaria generata
 
     const { stateLogin, globaLoginFetch } = useGlobalContext();
     const { isLogged, error } = stateLogin;
     const navigate = useNavigate();
-    const [user, setUser] = useState(
-        {
-            email: "trottarosario@gmail.com", password: "123456"
-        }
-    )
+    const [user, setUser] = useState({ email: "", password: "" })
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        globaLoginFetch(user);
+        globaLoginFetch(user)
     }
 
     const handleChange = (e) => {
@@ -43,7 +43,7 @@ const LoginForm = () => {
 
     if (!error.isError)
         return (
-            <Container className="p-4 shadow-lg rounded text-bg-light mt-5 text-center align-items-center">
+            <Container style={{width:"65%"}} className="p-4 shadow-lg rounded text-bg-light mt-5 text-center align-items-center">
                 <header>
                     <h4 style={{ fontSize: "20px", fontFamily: "cursive" }}>Login</h4>
                 </header>

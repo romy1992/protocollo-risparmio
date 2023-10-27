@@ -1,39 +1,60 @@
-import instance from "../../utility/api";
-import { isAuthUser, catchError } from "../reducers/loginReducer";
+import database from "../../config/firebase";
+import { catchError, isAuthUser } from "../reducers/loginReducer";
 
 /**
  *  Se abbiamo solo pochi metoidi,usiamo una funzione direttamente nel reducer 
     Altrimenti in un file separato come questo
 */
 
-// LOGIN
-export const loginFetch = (path, body) => async (dispath) => {
+export const loginFetch = (body) => async (dispath) => {
     dispath(catchError(
         {
             message: "",
             isError: false
         }
     ))
-    try {
-        const response = await instance.post(path, body);
-        const { data } = response;
-        dispath(isAuthUser(data))
+    // LOGIN
+    const dataRef = database.ref("/userContainer");
+    // Esegui una query per ottenere gli utenti con il campo "codUser" specifico
+    const query1 = dataRef.orderByChild("email")
+        .equalTo(body.email).once("value");
 
-        if (!data)
-            dispath(catchError(
-                {
-                    message: "Utente o password errate...",
-                    isError: true
-                }
-            ))
+    // Esegui una query per ottenere gli utenti con il campo "password" specifico
+    const query2 = dataRef.orderByChild("password")
+        .equalTo(body.password).once("value");
 
+    Promise.all([query1, query2])
+        .then((snapshots) => {
+            const risultati1 = [];
+            const risultati2 = [];
 
-    } catch (error) {
-        dispath(catchError(
-            {
-                message: "Errore Server...",
-                isError: true
+            snapshots[0].forEach((childSnapshot) => {
+                const utente = childSnapshot.val();
+                risultati1.push(utente);
+            });
+
+            snapshots[1].forEach((childSnapshot) => {
+                const utente = childSnapshot.val();
+                risultati2.push(utente);
+            });
+
+            // Unisci i risultati (utenti che soddisfano entrambi i criteri)
+            const risultatiFinali = risultati1.filter(
+                (utente1) =>
+                    risultati2.some((utente2) =>
+                        utente1.idUserContainer === utente2.idUserContainer)
+            );
+
+            if (risultatiFinali[0].email === body.email
+                && risultatiFinali[0].password === body.password)
+                dispath(isAuthUser(true))
+            else {
+                dispath(isAuthUser(false))
+                dispath(catchError({ message: "Utente o password errate...", isError: true }))
             }
-        ))
-    }
+        })
+        .catch((error) => {
+            dispath(isAuthUser(false))
+            dispath(catchError({ message: "Errore Server : " + error, isError: true }))
+        });
 }

@@ -1,8 +1,9 @@
 import { createContext, useContext, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { isAuthUser, logout } from "../redux/reducers/loginReducer";
-import { searchContainer, searchInLikeMonths, updateContainer } from "../redux/service/reducerContainerService";
+import { insertCard, searchContainer, searchInLikeMonths, updateContainer } from "../redux/service/reducerContainerService";
 import { loginFetch } from "../redux/service/reducerLoginService";
+import database from "../config/firebase";
 import {
     TABELLA_ACCREDITI,
     TABELLA_SPESE,
@@ -14,6 +15,8 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
 
     const [showSearch, setShowSearch] = useState(true);
+    const dataRef = database.ref("/container");
+    const newDataRef = dataRef.push();
 
     /** REDUX */
 
@@ -24,7 +27,7 @@ const AppProvider = ({ children }) => {
 
     // Chiama la funzione di login con Redux
     const globaLoginFetch = (user) => {
-        uDispach(loginFetch("auth/login", user))
+        uDispach(loginFetch(user))
     }
 
     // Check Auth Manual
@@ -40,12 +43,16 @@ const AppProvider = ({ children }) => {
 
     // Cerca il container in base alla mail
     const globalSearchContainer = (email) => {
-        uDispach(searchContainer(`container/search/${email}`))
+        uDispach(searchContainer(email))
     }
 
     // Update generale del container
     const globalUpdateContainer = (payload) => {
-        uDispach(updateContainer("container/update", payload))
+        uDispach(updateContainer(payload))
+    }
+
+    const globalInsertCard = (payload) => {
+        uDispach(insertCard(payload))
     }
 
     // Update per modifiche al mese
@@ -62,12 +69,13 @@ const AppProvider = ({ children }) => {
     // Elimina la Card del mese
     const deleteCard = (id) => {
         let a = container.months.filter(el => el.idUMonth !== id);
-        uDispach(updateContainer("container/update", { ...container, months: a }))
+        uDispach(updateContainer({ ...container, months: a }))
     }
 
     // Setta il payload in base alla query di ricerca
     const globalSearchInLikeMonths = (value) => {
-        uDispach(searchInLikeMonths("container/searchInLike", value, container.codUser))
+        if (container && container.codUser)
+            uDispach(searchInLikeMonths(value, container.codUser))
     }
 
     // Modifica lo stipendio mensile
@@ -82,13 +90,19 @@ const AppProvider = ({ children }) => {
             const map = container.months.map(m => {
                 if (m.idUMonth === idUMonth) {
                     if (title === TABELLA_SPESE) {
-                        let lei = Array.from(m.leisure)
-                        lei.push(body)
-                        m = { ...m, leisure: lei }
+                        body = { ...body, idLeisure: newDataRef.key }
+                        if (m.leisure !== undefined) {
+                            let lei = Array.from(m.leisure)
+                            lei.push(body)
+                            m = { ...m, leisure: lei }
+                        } else m = { ...m, leisure: [body] }
                     } else if (title === TABELLA_ACCREDITI) {
-                        let fixed = Array.from(m.fixedMonthlyCredit)
-                        fixed.push(body)
-                        m = { ...m, fixedMonthlyCredit: fixed }
+                        body = { ...body, idFixedMonthlyCredit: newDataRef.key }
+                        if (m.fixedMonthlyCredit !== undefined) {
+                            let fixed = Array.from(m.fixedMonthlyCredit)
+                            fixed.push(body)
+                            m = { ...m, fixedMonthlyCredit: fixed }
+                        } else m = { ...m, fixedMonthlyCredit: [body] }
                     }
                 }
                 return m;
@@ -99,7 +113,8 @@ const AppProvider = ({ children }) => {
             let contInput = container;
             if (contInput.fixedCost === null)
                 contInput = { ...contInput, fixedCost: { costs: [] } }
-            let co = Array.from(contInput.fixedCost.costs);
+            let co = contInput.fixedCost.costs ? Array.from(contInput.fixedCost.costs) : [];
+            body = { ...body, idLeisure: newDataRef.key }
             co.push(body)
             const fs = { ...contInput.fixedCost, costs: co }
             globalUpdateContainer(calculateTotal({ ...contInput, fixedCost: fs }, idUMonth))
@@ -208,7 +223,7 @@ const AppProvider = ({ children }) => {
             months.push(month)
             return { ...containerInput, fixedCost: { ...editFixedCost }, months }
         } else {
-            let listMounths = Array.from(containerInput.months);
+            let listMounths = containerInput.months ? Array.from(containerInput.months) : [];
             let editMonths = []
             listMounths.forEach(month => {
                 // Totale Spese idMese
@@ -228,7 +243,7 @@ const AppProvider = ({ children }) => {
 
     // Somma i totali
     const somTotal = (obj) => {
-        return obj && obj.reduce((a, b) => a + parseFloat(b.price), 0)
+        return obj ? obj.reduce((a, b) => a + parseFloat(b.price), 0) : 0
     }
 
 
@@ -238,6 +253,7 @@ const AppProvider = ({ children }) => {
         <AppContext.Provider
             value={
                 {
+                    newDataRef, globalInsertCard,
                     editSalary, addRowNote, deleteCard, deleteRow, deleteAllRow, editRow,
                     showSearch, setShowSearch,
                     stateLogin, isAuth, globaLoginFetch, globaLogout,

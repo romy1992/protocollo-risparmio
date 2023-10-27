@@ -28,11 +28,12 @@ const Navbar = () => {
         <nav className="navbar navbar-expand-sm bg-body-tertiary"
             data-bs-theme="dark">
             <div className="container-fluid">
-                <div className="nav-brand mt-2">
-                    <h6 style={{ color: "white" }}>Protocollo Risparmio</h6>
-                </div>
-
-                <div className={`${show ? "container-fluid" : "text-center align-items-center"}`}>
+                {
+                    !show && <div className="nav-brand mt-2">
+                        <h6 style={{ color: "white" }}>Protocollo Risparmio</h6>
+                    </div>
+                }
+                <div className={`${show ? "container-fluid" : "text-center align-items-center"}`} >
                     <div className={`collapse navbar-collapse ${show ? "show" : ""}`}>
                         <ul className="navbar-nav">
                             {
@@ -49,17 +50,24 @@ const Navbar = () => {
                                 })
                             }
                         </ul>
+                        <FormControl
+                            style={{ display: showSearch ? `` : `none` }}
+                            type='search'
+                            placeholder='Cerca'
+                            value={query}
+                            onChange={(e) => handleSearch(e)} />
                     </div>
+
                 </div>
-                <Form>
+                {/* <div className="container-fluid">
                     <FormControl
                         style={{ display: showSearch ? `block` : `none` }}
                         type='search'
                         placeholder='Cerca'
                         value={query}
                         onChange={(e) => handleSearch(e)} />
-                </Form>
-                <ButtonGroup>
+                </div> */}
+                <ButtonGroup style={{marginTop: showSearch ? `10px` : ``}}>
                     <button
                         className="btn btn-danger"
                         type="button"

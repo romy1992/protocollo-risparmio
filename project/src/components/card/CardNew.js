@@ -6,7 +6,7 @@ import { useGlobalContext } from '../../context/context';
 import { month } from '../../model/containerModel';
 
 const CardNew = ({ setIsOpenNew }) => {
-    let { container, globalUpdateContainer } = useGlobalContext();
+    let { newDataRef, container, globalUpdateContainer, globalInsertCard } = useGlobalContext();
     const [newCard, setNewCard] = useState(month)
 
     const handleNewCard = (e) => {
@@ -19,11 +19,14 @@ const CardNew = ({ setIsOpenNew }) => {
     };
 
     const addClickCard = () => {
-        const o = container.months.filter(el => el.title === newCard.title &&
-            el.note === newCard.note)
+        const o = container.months ? container.months.filter(el => el.title === newCard.title &&
+            el.note === newCard.note) : [];
         if (newCard.title && o.length === 0) {
             // Creo un nuovo array dall'originale
-            const array = Array.from(container.months);
+            let array = []
+            if (container.months)
+                array = Array.from(container.months);
+            newCard.idUMonth = newDataRef.key
             // Recupero il costo fisso
             let cost = container
                 && container.fixedCost
@@ -35,9 +38,15 @@ const CardNew = ({ setIsOpenNew }) => {
             // Aggiungo la nuova card
             array.push(newCard)
             // Creo il nuovo contenitore
-            const newContainer = { ...container, months: array }
-            // Aggiorno
-            globalUpdateContainer(newContainer)
+            let newContainer = { ...container, months: array }
+            //Inserisco se è nuovo
+            if (container.codUser === "") {
+                newContainer = { ...newContainer, codUser: localStorage.getItem("user") }
+                globalInsertCard(newContainer)
+            }
+            else // Aggiorno
+                globalUpdateContainer(newContainer)
+
             handleReset();
             setIsOpenNew(false)
         } else

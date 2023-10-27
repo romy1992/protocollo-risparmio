@@ -18,7 +18,7 @@ const ListCardsMonth = ({ email }) => {
         (!isLoading && !errorContainer.isError) ?
           (
             <Row className='mt-3'>
-              {container &&
+              {container && container.months &&
                 container.months.length > 0 ?
                 (
                   container.months.slice().reverse().map((el, index) => {
