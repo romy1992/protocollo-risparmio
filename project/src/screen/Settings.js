@@ -7,8 +7,9 @@ import useTitle from '../hooks/useTitle'
 const Settings = () => {
 
   useTitle("Settings")
-  const { container, setShowSearch, isAuth } = useGlobalContext();
+  const { container, setShowSearch, isAuth, globalSearchContainer } = useGlobalContext();
   useEffect(() => {
+    globalSearchContainer(localStorage.getItem("user"))
     // Per tenere lo stato di autenticazione attivo
     isAuth()
     setShowSearch(false)

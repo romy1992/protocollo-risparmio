@@ -20,8 +20,7 @@ const Home = () => {
 
   useEffect(() => {
     localStorage.setItem("user", email)
-    if (localStorage.getItem("user"))
-      isAuth(true)
+    if (localStorage.getItem("user")) isAuth()
   }, [])
 
   return (

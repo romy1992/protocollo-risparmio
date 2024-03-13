@@ -39,13 +39,13 @@ const RowMonth = React.memo((
                 <td className='text-center'>
                     {
                         !isEdit ?
-                            (editBody.note) :
+                            (item?.note) :
                             (
                                 <FormControl
                                     name="note"
                                     type="text"
-                                    placeholder={editBody.note}
-                                    value={editBody.note}
+                                    placeholder={editBody?.note}
+                                    value={editBody?.note}
                                     onChange={handleEditChange}
                                 />
                             )
@@ -54,13 +54,13 @@ const RowMonth = React.memo((
                 <td className='text-center'>
                     {
                         !isEdit ?
-                            (<>{editBody.price} €</>) :
+                            (<>{editBody?.price} €</>) :
                             (
                                 <FormControl
                                     name="price"
                                     type="number"
-                                    placeholder={editBody.price || 0}
-                                    value={editBody.price}
+                                    placeholder={editBody?.price}
+                                    value={editBody?.price}
                                     onChange={handleEditChange}
                                 />
                             )

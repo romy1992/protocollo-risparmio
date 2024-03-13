@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, FormControl, Row } from 'react-bootstrap';
 import { useGlobalContext } from '../../context/context';
 import { AiFillEdit, AiOutlineCheckCircle } from 'react-icons/ai';
 
-const Salary = ({ month }) => {
+const Salary = ({ idUMonth, salary }) => {
     const { editSalary } = useGlobalContext();
     const [isDisabilited, setIsDisabilited] = useState(true)
-    const [changeSalary, editChangeSalary] = useState(month.salary)
+    const [changeSalary, editChangeSalary] = useState()
 
     // Salva e disabilita il bottone
     const updateSalary = () => {
@@ -17,13 +17,17 @@ const Salary = ({ month }) => {
     const handelSalary = (e) => {
         const { value } = e.target;
         editChangeSalary(value)
-        editSalary(month.idUMonth, value);
+        editSalary(idUMonth, value);
     }
+
+    useEffect(() => {
+        editChangeSalary(salary ? salary : 0)
+    }, [])
 
     return (
         <Row className='mt-5 text-center'>
             <Col md={2} className='mt-1'>
-                <h5 className='text-center'>Stipendio : {changeSalary} €</h5>
+                <h5 className='text-center'>Stipendio : {changeSalary ? changeSalary : salary} €</h5>
             </Col>
             <Col className='mt-1'>
                 <button
@@ -42,8 +46,8 @@ const Salary = ({ month }) => {
                     id='salary'
                     className='form-control'
                     type='number'
-                    placeholder={changeSalary|0}
-                    value={changeSalary}
+                    placeholder={changeSalary | salary}
+                    value={changeSalary | salary}
                     onChange={handelSalary}
                 />
             </Col>

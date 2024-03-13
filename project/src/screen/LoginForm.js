@@ -30,8 +30,8 @@ const LoginForm = () => {
     // Controlla se è tutto ok è va avanti con la pagina
     useEffect(() => {
         if (isLogged) {
-            localStorage.setItem("user", user.email)
-            navigate(`home/${user.email}`)
+            localStorage.setItem("user", user?.email)
+            navigate(`home/${user?.email}`)
         }
     }, [isLogged])
 
@@ -45,7 +45,7 @@ const LoginForm = () => {
         return (
             <Container style={{width:"65%"}} className="p-4 shadow-lg rounded text-bg-light mt-5 text-center align-items-center">
                 <header>
-                    <h4 style={{ fontSize: "20px", fontFamily: "cursive" }}>Login</h4>
+                    <h4 style={{ fontSize: "20px"}}>Login</h4>
                 </header>
                 <Form onSubmit={handleSubmit}>
                     <FormGroup className="mt-3">

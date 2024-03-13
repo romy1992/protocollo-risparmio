@@ -13,7 +13,7 @@ const Error = () => {
   useEffect(() => {
     const time = setTimeout(() => {
       dispath(catchError({ message: "", isError: false }))
-      navigate("/")
+      navigate("/home/"+localStorage.getItem("user"))
     }, 2000)
     return () => clearTimeout(time)
   }, [])

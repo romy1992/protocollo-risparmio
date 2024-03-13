@@ -1,12 +1,12 @@
 import database from "../../config/firebase";
-import { catchError, getContainerByCod, startLoading, stopLoading, updateContainerReducer } from "../reducers/containerReducer";
+import { catchError, getContainerByCod, setActualMonth, startLoading, stopLoading, updateContainerReducer } from "../reducers/containerReducer";
 
 /**
  * Cerca il container per email
  * @param {*} path 
  * @returns 
  */
-export const searchContainer = (path) => async (dispach) => {
+export const searchContainer = (path, name) => async (dispach) => {
     dispach(startLoading())
     const dataRef = database.ref("/container");
     dataRef.orderByChild("codUser").equalTo(path).once("value")
@@ -14,6 +14,8 @@ export const searchContainer = (path) => async (dispach) => {
             snapshot.forEach((childSnapshot) => {
                 const user = childSnapshot.val();
                 dispach(getContainerByCod(user))
+                if (name)
+                    dispach(setActualMonth(name))
             });
         })
         .catch((error) => {

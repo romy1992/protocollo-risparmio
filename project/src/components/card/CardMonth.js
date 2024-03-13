@@ -5,18 +5,20 @@ import { useGlobalContext } from '../../context/context';
 import { CiEdit, CiSaveDown1 } from "react-icons/ci";
 import { TiDeleteOutline } from "react-icons/ti";
 import { ImEnter } from "react-icons/im";
+import { setActualMonth } from '../../redux/reducers/containerReducer';
+import { useDispatch } from 'react-redux';
 
 const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) => {
     const navigate = useNavigate();
 
     const { updateMounths, deleteCard, setShowSearch, isAuth } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
-    const [body, setBody] = useState({
-        idUMonth, title, note, des
-    })
+    const [body, setBody] = useState({idUMonth, title, note, des})
+    const dispatch = useDispatch()
 
-    const handleCardMonth = (value) => {
-        navigate(`/month/${value}`)
+    const handleCardMonth = () => {
+        navigate(`/month/${title}`)
+        dispatch(setActualMonth(title))
         setShowSearch(false)
     }
 
@@ -114,7 +116,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
                             disabled={isEdit}
                             type='button'
                             className='btn btn-md btn-outline-info'
-                            onClick={() => handleCardMonth(title)}
+                            onClick={handleCardMonth}
                         >
                             <ImEnter />
                         </button>
