@@ -42,8 +42,8 @@ const AppProvider = ({ children }) => {
     }
 
     // Cerca il container in base alla mail
-    const globalSearchContainer = (email, name) => {
-        uDispach(searchContainer(email, name))
+    const globalSearchContainer = (email) => {
+        uDispach(searchContainer(email))
     }
 
     // Update generale del container

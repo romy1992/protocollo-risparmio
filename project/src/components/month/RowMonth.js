@@ -30,7 +30,7 @@ const RowMonth = React.memo((
 
     useEffect(() => {
         setEditBody(item)
-    }, [])
+    }, [item])
 
 
     return (
@@ -39,7 +39,7 @@ const RowMonth = React.memo((
                 <td className='text-center'>
                     {
                         !isEdit ?
-                            (item?.note) :
+                            (editBody?.note) :
                             (
                                 <FormControl
                                     name="note"

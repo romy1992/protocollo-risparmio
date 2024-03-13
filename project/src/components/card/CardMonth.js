@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, FormControl, Row } from 'react-bootstrap';
+import { CiEdit, CiSaveDown1 } from "react-icons/ci";
+import { ImEnter } from "react-icons/im";
+import { TiDeleteOutline } from "react-icons/ti";
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context/context';
-import { CiEdit, CiSaveDown1 } from "react-icons/ci";
-import { TiDeleteOutline } from "react-icons/ti";
-import { ImEnter } from "react-icons/im";
-import { setActualMonth } from '../../redux/reducers/containerReducer';
-import { useDispatch } from 'react-redux';
 
 const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) => {
     const navigate = useNavigate();
@@ -14,11 +12,9 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
     const { updateMounths, deleteCard, setShowSearch, isAuth } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
     const [body, setBody] = useState({idUMonth, title, note, des})
-    const dispatch = useDispatch()
 
     const handleCardMonth = () => {
         navigate(`/month/${title}`)
-        dispatch(setActualMonth(title))
         setShowSearch(false)
     }
 

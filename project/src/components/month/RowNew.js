@@ -10,7 +10,7 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
     const [body, setBody] = useState(
         {
             note: "",
-            price: 0
+            price: ""
         }
     )
 
@@ -30,7 +30,7 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
     }
 
     useEffect(() => {
-        setBody({ note: "", price: 0 })
+        setBody({ note: "", price: "" })
     }, [isOpenRow])
 
     return (
@@ -46,10 +46,11 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
             </td>
             <td>
                 <FormControl
+                    min={1}
                     name="price"
                     type="number"
                     placeholder="Inserisci nuovo prezzo"
-                    value={body.price || 0}
+                    value={body?.price}
                     onChange={(e) => handleAddRow(e)}
                 />
             </td>

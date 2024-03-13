@@ -15,10 +15,10 @@ const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader,
     // Ricalcola le tabelle
     useEffect(() => {
         if (obj) {
-            const totale = obj.reduce((a, b) => a + parseFloat(b.price), 0)
+            const totale = obj.reduce((a, b) => a + parseFloat(b?.price), 0)
             setTotal(totale)
         }
-    }, [id, salary, obj?.length])
+    }, [id, salary, obj])
 
 
     return (
@@ -42,7 +42,7 @@ const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader,
                     </tr>
                 </thead>
                 <tbody>
-                    {obj && obj.map((item, index) => {
+                    {obj?.map((item, index) => {
                         return <RowMonth
                             key={index}
                             idUMonth={id}

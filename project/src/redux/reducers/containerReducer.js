@@ -7,8 +7,7 @@ const initialState = {
         isError: false,
         message: ""
     },
-    container,
-    actualMonth: {},
+    container
 }
 
 const containerReducer = createSlice(
@@ -28,10 +27,6 @@ const containerReducer = createSlice(
             stopLoading: (state) => {
                 state.isLoading = false
             },
-            setActualMonth: (state, action) => {
-                const ms = state.container?.months?.filter((el) => el.title === action.payload);
-                state.actualMonth = ms[0]
-            },
             catchError: (state, action) => {
                 state.isLoading = false;
                 state.errorContainer = { ...action.payload }
@@ -43,7 +38,6 @@ const containerReducer = createSlice(
 
 
 export const {
-    setActualMonth,
     startLoading,
     getContainerByCod,
     stopLoading,
