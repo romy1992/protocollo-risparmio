@@ -23,7 +23,6 @@ const month =
     title: "",
     note: "",
     des: "",
-    salary: 0,
     cost: 0,
     leisure: [],
     totalLeisure: 0,

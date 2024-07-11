@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 import { Button, Container, Form, FormControl, FormGroup } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useGlobalContext } from "../context/context";
 import useTitle from "../hooks/useTitle";
-
-
+import { setCurrentUser } from "../redux/reducers/loginReducer";
+import { loginFetch } from "../redux/service/reducerLoginService";
 
 const LoginForm = () => {
     useTitle("Login")
-
-    //const newDataRef = dataRef.push();// Inserisci dati
-    //const newKey = newDataRef.key; // Ottieni la chiave primaria generata
-
-    const { stateLogin, globaLoginFetch } = useGlobalContext();
-    const { isLogged, error } = stateLogin;
+    
+    const { isLogged, error } = useSelector(state => state.loginReducer);
+    const dispach = useDispatch();
     const navigate = useNavigate();
     const [user, setUser] = useState({ email: "", password: "" })
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        globaLoginFetch(user)
+        dispach(setCurrentUser(user?.email))
+        dispach(loginFetch(user))
     }
 
     const handleChange = (e) => {
@@ -30,7 +28,6 @@ const LoginForm = () => {
     // Controlla se è tutto ok è va avanti con la pagina
     useEffect(() => {
         if (isLogged) {
-            localStorage.setItem("user", user?.email)
             navigate(`home/${user?.email}`)
         }
     }, [isLogged])
@@ -43,9 +40,9 @@ const LoginForm = () => {
 
     if (!error.isError)
         return (
-            <Container style={{width:"65%"}} className="p-4 shadow-lg rounded text-bg-light mt-5 text-center align-items-center">
+            <Container style={{ width: "65%" }} className="p-4 shadow-lg rounded text-bg-light mt-5 text-center align-items-center">
                 <header>
-                    <h4 style={{ fontSize: "20px"}}>Login</h4>
+                    <h4 style={{ fontSize: "20px" }}>Login</h4>
                 </header>
                 <Form onSubmit={handleSubmit}>
                     <FormGroup className="mt-3">

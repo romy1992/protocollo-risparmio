@@ -1,12 +1,14 @@
 import { memo, useEffect, useState } from "react";
-import { Col, FormControl, Row } from "react-bootstrap";
-import { useGlobalContext } from "../../context/context";
+import { Button, Col, FormControl, Row } from "react-bootstrap";
 import { GiConfirmed } from "react-icons/gi";
 import { GrPowerReset } from "react-icons/gr";
+import { useDispatch } from "react-redux";
+import { addRowNote } from "../../redux/reducers/containerReducer";
 
 const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
 
-    const { addRowNote } = useGlobalContext();
+    const dispach = useDispatch()
+
     const [body, setBody] = useState(
         {
             note: "",
@@ -24,7 +26,7 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
             return alert("Devi inserire sia la nota che il prezzo!!")
         } else {
             setIsOpenRow(!isOpenRow)
-            addRowNote(id, title, body)
+            dispach(addRowNote(id, title, body))
             setBody({ note: '', price: 0 })
         }
     }
@@ -57,22 +59,22 @@ const RowNew = memo(({ setIsOpenRow, isOpenRow, isEdit, id, title }) => {
             <td className='text-center'>
                 <Row>
                     <Col>
-                        <button
+                        <Button
                             disabled={isEdit}
                             onClick={addRow}
                             type='button'
                             className='btn btn-md btn-success'>
                             <GiConfirmed />
-                        </button>
+                        </Button>
                     </Col>
                     <Col>
-                        <button
+                        <Button
                             disabled={isEdit}
                             onClick={() => setIsOpenRow(!isOpenRow)}
                             type='button'
                             className='btn btn-md btn-warning'>
                             <GrPowerReset />
-                        </button>
+                        </Button>
                     </Col>
                 </Row>
             </td>

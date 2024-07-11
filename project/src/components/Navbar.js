@@ -1,28 +1,46 @@
-import React, { useState } from 'react';
-import { ButtonGroup, Form, FormControl } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { ButtonGroup, FormControl } from 'react-bootstrap';
 import { AiOutlineLogout } from 'react-icons/ai';
 import { FaBars } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../context/context';
-import links from '../utility/links';
+import { searchInLikeMonths } from '../redux/reducers/containerReducer';
+import { logout } from '../redux/reducers/loginReducer';
+
 
 const Navbar = () => {
     const navigate = useNavigate();
-
-    const { globaLogout, globalSearchInLikeMonths, showSearch } = useGlobalContext();
+    const dispach = useDispatch();
+    const { currentUser } = useSelector(state => state.loginReducer);
+    const { showSearch } = useGlobalContext();
     const [show, setShow] = useState(false);
     const [query, setQuery] = useState("")
+    const [links, setLinks] = useState()
 
     const handleSearch = (e) => {
         const { value } = e.target;
         setQuery(value)
-        globalSearchInLikeMonths(value)
+        dispach(searchInLikeMonths(value, currentUser))
     }
 
     const logOut = () => {
-        globaLogout()
+        dispach(logout())
         navigate("/")
     }
+
+    useEffect(() => {
+        setLinks([
+            {
+                path: `/home/${currentUser}`,
+                name: "Home"
+            },
+            {
+                path: "/settings",
+                name: "Settings"
+            }
+        ])
+    }, [currentUser])
 
     return (
         <nav className="navbar navbar-expand-sm bg-body-tertiary"
@@ -37,7 +55,7 @@ const Navbar = () => {
                     <div className={`collapse navbar-collapse ${show ? "show" : ""}`}>
                         <ul className="navbar-nav">
                             {
-                                links.map((el, index) => {
+                                links?.map((el, index) => {
                                     return (
                                         <li className='nav-item'
                                             key={index}>

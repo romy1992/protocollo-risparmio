@@ -3,15 +3,18 @@ import { Card, Col, FormControl, Row } from 'react-bootstrap';
 import { CiEdit, CiSaveDown1 } from "react-icons/ci";
 import { ImEnter } from "react-icons/im";
 import { TiDeleteOutline } from "react-icons/ti";
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from '../../context/context';
+import { deleteCard, updateMounths } from '../../redux/reducers/containerReducer';
+import { isAuthUser } from '../../redux/reducers/loginReducer';
 
 const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) => {
     const navigate = useNavigate();
-
-    const { updateMounths, deleteCard, setShowSearch, isAuth } = useGlobalContext();
+    const dispatch = useDispatch();
+    const { setShowSearch } = useGlobalContext();
     const [isEdit, setIsEdit] = useState(false)
-    const [body, setBody] = useState({idUMonth, title, note, des})
+    const [body, setBody] = useState({ idUMonth, title, note, des })
 
     const handleCardMonth = () => {
         navigate(`/month/${title}`)
@@ -27,7 +30,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
         setIsEdit(!isEdit)
         if (checkUpdate(container.months)) {
             // Modifica il titoli e des del mese
-            updateMounths(body)
+            dispatch(updateMounths(body))
             setBody({ ...body })
         } else {
             setBody({ ...body })
@@ -47,7 +50,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
 
     // Per tenere lo stato di autenticazione attivo
     useEffect(() => {
-        isAuth()
+        dispatch(isAuthUser(true))
     }, [])
 
     return (
@@ -143,7 +146,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
                             disabled={isEdit}
                             type='button'
                             className='btn btn-md btn-outline-danger'
-                            onClick={() => deleteCard(idUMonth, container)}
+                            onClick={() => dispatch(deleteCard(idUMonth))}
                         >
                             <TiDeleteOutline />
                         </button>

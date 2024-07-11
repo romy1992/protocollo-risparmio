@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from "react-router-dom";
-import Salary from '../components/month/Salary';
 import TableMonth from '../components/month/TableMonth';
 import { useGlobalContext } from '../context/context';
 import { TABELLA_ACCREDITI, TABELLA_SPESE } from '../context/state';
 import useTitle from '../hooks/useTitle';
+import { searchContainer } from '../redux/reducers/containerReducer';
+import { isAuthUser } from '../redux/reducers/loginReducer';
+import { USER } from '../utility/constStorage';
 
 const Month = () => {
   const { name } = useParams();
   useTitle(`Mese di ${name}`)
-  const { isLoading, setShowSearch, isAuth, globalSearchContainer } = useGlobalContext();
+  const { isLoading, setShowSearch } = useGlobalContext();
   const containerReducer = useSelector(state => state.containerReducer)
   const { container } = containerReducer
+  const dispatch = useDispatch();
   const [actualMonth, setActualMonth] = useState()
 
   useEffect(() => {
@@ -21,9 +24,9 @@ const Month = () => {
   }, [container])
 
   useEffect(() => {
-    globalSearchContainer(localStorage.getItem("user"))
+    dispatch(searchContainer(localStorage.getItem(USER)))
     setShowSearch(false)
-    isAuth()
+    dispatch(isAuthUser(true))
   }, [])
 
   return (
@@ -38,13 +41,9 @@ const Month = () => {
             <h6 className='mt-3'>{actualMonth?.des}</h6>
             <hr />
 
-            {/* Componente di modifica stipendio */}
-            <Salary idUMonth={actualMonth?.idUMonth} salary={actualMonth?.salary} />
-
             {/* Tabelle per le spese */}
             <TableMonth
               id={actualMonth?.idUMonth}
-              salary={actualMonth?.salary}
               nameMonth={name}
               title={TABELLA_SPESE}
               obj={actualMonth?.leisure}
@@ -55,7 +54,6 @@ const Month = () => {
             {/* Tabelle per gli accrediti */}
             <TableMonth
               id={actualMonth?.idUMonth}
-              salary={actualMonth?.salary}
               nameMonth={name}
               title={TABELLA_ACCREDITI}
               obj={actualMonth?.fixedMonthlyCredit}

@@ -3,17 +3,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 import { catchError } from '../redux/reducers/loginReducer';
 import ErrorMode from '../components/ErrorMode';
+import { USER } from '../utility/constStorage';
 
 
 const Error = () => {
-  const { error } = useSelector(state => state.loginReducer)
+  const { error, isLogged } = useSelector(state => state.loginReducer)
   const navigate = useNavigate();
   const dispath = useDispatch();
 
   useEffect(() => {
     const time = setTimeout(() => {
       dispath(catchError({ message: "", isError: false }))
-      navigate("/home/"+localStorage.getItem("user"))
+      if (isLogged)
+        navigate("/home/" + localStorage.getItem(USER))
+      else
+        navigate('/')
     }, 2000)
     return () => clearTimeout(time)
   }, [])

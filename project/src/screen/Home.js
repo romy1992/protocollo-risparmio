@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from 'react'
-import { IoAddCircleOutline } from 'react-icons/io5'
 import { GrPowerReset } from 'react-icons/gr'
+import { IoAddCircleOutline } from 'react-icons/io5'
+import { useDispatch, useSelector } from 'react-redux'
 import CardNew from '../components/card/CardNew'
 import ListCardsMonth from '../components/card/ListCardsMonth'
 import { useGlobalContext } from '../context/context'
 import useTitle from '../hooks/useTitle'
-import { useParams } from 'react-router-dom'
+import { USER } from '../utility/constStorage'
+import { isAuthUser } from '../redux/reducers/loginReducer'
 
 const Home = () => {
   useTitle("Home")
-  const { email } = useParams();
 
-  const { setShowSearch, isAuth } = useGlobalContext();
+  const { currentUser } = useSelector(state => state.loginReducer);
+  const dispatch = useDispatch();
+  const { setShowSearch } = useGlobalContext();
   const [isOpenNew, setIsOpenNew] = useState(false);
 
   useEffect(() => {
     setShowSearch(true);
-  }, [email])
+  }, [currentUser])
 
   useEffect(() => {
-    localStorage.setItem("user", email)
-    if (localStorage.getItem("user")) isAuth()
+    if (localStorage.getItem(USER))  dispatch(isAuthUser(true))
   }, [])
 
   return (
@@ -52,7 +54,7 @@ const Home = () => {
           <CardNew setIsOpenNew={setIsOpenNew} />
         </div>
       }
-      <ListCardsMonth email={email} />
+      <ListCardsMonth email={currentUser} />
     </div>
   )
 }

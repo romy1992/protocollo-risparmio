@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row, Table } from "react-bootstrap";
+import { Button, Col, Modal, ModalBody, ModalFooter, ModalHeader, ModalTitle, Row, Table } from "react-bootstrap";
 import { useGlobalContext } from "../../context/context";
 import RowMonth from "./RowMonth";
 import RowNew from "./RowNew";
 import { RiMenuAddFill, RiDeleteBin2Fill } from "react-icons/ri"
+import { MdOutlineBookmarkAdded } from "react-icons/md";
+import { TABELLA_SPESE } from "../../context/state";
+import { useDispatch, useSelector } from "react-redux";
+import { addMultipleRow, addRowNote, deleteAllRow } from "../../redux/reducers/containerReducer";
 
-const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader, buttons }) => {
+const TableMonth = React.memo(({ id, nameMonth, title, obj, arrayHeader, buttons }) => {
 
+    const dispach = useDispatch()
     const [isOpenRow, setIsOpenRow] = useState(false)
     const [total, setTotal] = useState()
-    const { deleteAllRow } = useGlobalContext();
-
+    const [showModal, setShowModal] = useState(false)
 
     // Ricalcola le tabelle
     useEffect(() => {
@@ -18,7 +22,7 @@ const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader,
             const totale = obj.reduce((a, b) => a + parseFloat(b?.price), 0)
             setTotal(totale)
         }
-    }, [id, salary, obj])
+    }, [id, obj])
 
 
     return (
@@ -68,7 +72,7 @@ const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader,
                                     <Col>
                                         <button
                                             disabled={isOpenRow}
-                                            onClick={() => deleteAllRow(id, title)}
+                                            onClick={() => dispach(deleteAllRow(id, title))}
                                             type='button'
                                             className='btn btn-md btn-outline-dark'>
                                             <RiDeleteBin2Fill />
@@ -92,19 +96,84 @@ const TableMonth = React.memo(({ id, salary, nameMonth, title, obj, arrayHeader,
                 buttons &&
                 <Row>
                     <Col>
-                        <button
+                        <Button
                             disabled={isOpenRow}
                             onClick={() => setIsOpenRow(!isOpenRow)}
                             type='button'
-                            className='btn btn-md btn-outline-success'>
+                            variant="light btn btn-md btn-outline-success">
                             <RiMenuAddFill />
-                        </button>
+                        </Button>
+
+                        {
+                            title === TABELLA_SPESE &&
+                            <>
+                                <Button
+                                    className="ms-5"
+                                    onClick={() => setShowModal(!showModal)}
+                                    disabled={isOpenRow}
+                                    variant="light btn btn-md btn-outline-warning">
+                                    <MdOutlineBookmarkAdded />
+                                </Button>
+                                <ModalAddFixedCost
+                                    idUMonth={id}
+                                    show={showModal} setShow={setShowModal} />
+                            </>
+                        }
                     </Col>
                 </Row>
             }
         </div>
     )
 })
+
+const ModalAddFixedCost = ({ idUMonth, show, setShow }) => {
+    const { container } = useSelector(state => state.containerReducer)
+    const dispach = useDispatch()
+
+
+    const handlerAddFixedCostList = () => {
+        dispach(addMultipleRow(idUMonth))
+        setShow(!show)
+    }
+
+    const handlerAddFixedCost = (el) => {
+        let { note, price } = el
+        dispach(addRowNote(idUMonth, TABELLA_SPESE, { note, price }))
+        setShow(!show)
+    }
+
+    return (
+        <Modal centered show={show} onHide={() => setShow(!show)}>
+            <ModalHeader closeButton>
+                <ModalTitle>
+                    Aggiungi un costo fisso
+                </ModalTitle>
+            </ModalHeader>
+            <ModalBody>
+                {
+                    container?.fixedCost?.costs?.map((el, key) => (
+                        <Row key={key} className="rounded-2 p-2 mt-2 m-auto"
+                            onClick={() => handlerAddFixedCost(el)}
+                            style={{ cursor: "pointer", border: "1px solid gray", width: "98%" }}>
+                            <Col>
+                                <strong>{el?.note}</strong>
+                            </Col>
+                            <Col>
+                                <strong>{el?.price} €</strong>
+                            </Col>
+                        </Row>
+                    ))
+                }
+
+            </ModalBody>
+            <ModalFooter>
+                <Button variant="success" onClick={handlerAddFixedCostList}>
+                    Aggiungi tutti
+                </Button>
+            </ModalFooter>
+        </Modal>
+    )
+}
 
 
 export default TableMonth;

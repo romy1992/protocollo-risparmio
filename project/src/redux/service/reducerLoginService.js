@@ -18,11 +18,11 @@ export const loginFetch = (body) => async (dispath, getState) => {
     const dataRef = database.ref("/userContainer");
     // Esegui una query per ottenere gli utenti con il campo "codUser" specifico
     const query1 = dataRef.orderByChild("email")
-        .equalTo(body.email).once("value");
+        .equalTo(body?.email).once("value");
 
     // Esegui una query per ottenere gli utenti con il campo "password" specifico
     const query2 = dataRef.orderByChild("password")
-        .equalTo(body.password).once("value");
+        .equalTo(body?.password).once("value");
 
     Promise.all([query1, query2])
         .then((snapshots) => {

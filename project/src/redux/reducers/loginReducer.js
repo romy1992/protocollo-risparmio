@@ -1,7 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { USER } from "../../utility/constStorage";
 
 const initialState = {
     isLogged: false,
+    currentUser: localStorage.getItem(USER) ? localStorage.getItem(USER) : "",
     error: {
         message: "",
         isError: false
@@ -21,6 +23,12 @@ const loginReducer = createSlice(
             },
             logout: (state) => {
                 state.isLogged = false;
+                state.currentUser = ""
+                localStorage.removeItem(USER)
+            },
+            setCurrentUser: (state, action) => {
+                state.currentUser = action.payload
+                localStorage.setItem(USER, action.payload)
             }
         }
     }
@@ -28,6 +36,7 @@ const loginReducer = createSlice(
 
 // Se vogliamo usarli singolarmente
 export const {
+    setCurrentUser,
     isAuthUser,
     catchError,
     logout

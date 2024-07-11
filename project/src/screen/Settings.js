@@ -1,17 +1,24 @@
 import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import TableMonth from '../components/month/TableMonth'
 import { useGlobalContext } from '../context/context'
 import { TABELLA_SPESE_FISSE } from '../context/state'
 import useTitle from '../hooks/useTitle'
+import { searchContainer } from '../redux/reducers/containerReducer'
+import { isAuthUser } from '../redux/reducers/loginReducer'
+import { USER } from '../utility/constStorage'
 
 const Settings = () => {
-
   useTitle("Settings")
-  const { container, setShowSearch, isAuth, globalSearchContainer } = useGlobalContext();
+
+  const dispatch = useDispatch();
+  const { container } = useSelector(state => state.containerReducer);
+  const { setShowSearch } = useGlobalContext();
+
   useEffect(() => {
-    globalSearchContainer(localStorage.getItem("user"))
+    dispatch(searchContainer(localStorage.getItem(USER)))
     // Per tenere lo stato di autenticazione attivo
-    isAuth()
+    dispatch(isAuthUser(true))
     setShowSearch(false)
   }, [])
 

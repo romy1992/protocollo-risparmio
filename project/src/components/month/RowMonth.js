@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Col, FormControl, Row } from "react-bootstrap";
-import { useGlobalContext } from "../../context/context";
-import { TiDeleteOutline } from "react-icons/ti";
+import { Button, Col, FormControl, Row } from "react-bootstrap";
 import { CiEdit, CiSaveDown1 } from "react-icons/ci";
+import { TiDeleteOutline } from "react-icons/ti";
+import { useDispatch } from "react-redux";
+import { deleteRow, editRow } from "../../redux/reducers/containerReducer";
 
-const RowMonth = React.memo(( 
+const RowMonth = React.memo((
     {
         item,
         idUMonth,
@@ -13,14 +14,14 @@ const RowMonth = React.memo((
         buttons
     }) => {
 
-    const { deleteRow, editRow } = useGlobalContext();
+    const dispach = useDispatch()
     const [isEdit, setIsEdit] = useState(false)
     const [editBody, setEditBody] = useState(item)
 
 
     const editAndUpdate = () => {
         setIsEdit(!isEdit)
-        editRow(idUMonth, editBody, title)
+        dispach(editRow(idUMonth, editBody, title))
     }
 
     const handleEditChange = (e) => {
@@ -73,34 +74,37 @@ const RowMonth = React.memo((
                             {
                                 !isOpenRow && isEdit &&
                                 <Col>
-                                    <button
+                                    <Button
                                         onClick={editAndUpdate}
                                         type='button'
+                                        variant="success"
                                         className='btn btn-md btn-success'>
                                         <CiSaveDown1 />
-                                    </button>
+                                    </Button>
                                 </Col>
                             }
                             {
                                 !isEdit &&
                                 <Col>
-                                    <button
+                                    <Button
                                         disabled={isOpenRow}
                                         onClick={() => setIsEdit(!isEdit)}
                                         type='button'
+                                        variant="light"
                                         className='btn btn-md btn-outline-warning'>
                                         <CiEdit />
-                                    </button>
+                                    </Button>
                                 </Col>
                             }
                             <Col>
-                                <button
+                                <Button
                                     disabled={isEdit || isOpenRow}
-                                    onClick={() => deleteRow(idUMonth, title, item)}
+                                    onClick={() => dispach(deleteRow(idUMonth, title, item))}
                                     type='button'
+                                    variant="light"
                                     className='btn btn-md btn-outline-danger'>
                                     <TiDeleteOutline />
-                                </button>
+                                </Button>
                             </Col>
                         </Row>
                     </td>

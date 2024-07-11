@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { Card, Col, Form, FormControl, FormGroup, Row } from 'react-bootstrap';
 import { BiReset } from 'react-icons/bi';
 import { IoIosAdd } from 'react-icons/io';
-import { useGlobalContext } from '../../context/context';
+import { useDispatch, useSelector } from 'react-redux';
 import { month } from '../../model/containerModel';
-
+import { insertCard, updateContainer } from '../../redux/reducers/containerReducer';
+import { USER } from '../../utility/constStorage';
+import database from "../../config/firebase";
 const CardNew = ({ setIsOpenNew }) => {
-    let { newDataRef, container, globalUpdateContainer, globalInsertCard } = useGlobalContext();
+    const dispach = useDispatch()
+    const { container } = useSelector(state => state.containerReducer);
     const [newCard, setNewCard] = useState(month)
 
     const handleNewCard = (e) => {
@@ -22,30 +25,24 @@ const CardNew = ({ setIsOpenNew }) => {
         const o = container.months ? container.months.filter(el => el.title === newCard.title &&
             el.note === newCard.note) : [];
         if (newCard.title && o.length === 0) {
+            const dataRef = database.ref("/container");
+            const newDataRef = dataRef.push();
             // Creo un nuovo array dall'originale
             let array = []
-            if (container.months)
+            if (container?.months)
                 array = Array.from(container.months);
             newCard.idUMonth = newDataRef.key
-            // Recupero il costo fisso
-            let cost = container
-                && container.fixedCost
-                && container.fixedCost.totalFixedCost ?
-                container.fixedCost.totalFixedCost : 0
-            // Lo applico alla nuova card 
-            newCard.cost = cost
-            newCard.difference = - cost
             // Aggiungo la nuova card
             array.push(newCard)
             // Creo il nuovo contenitore
             let newContainer = { ...container, months: array }
             //Inserisco se è nuovo
             if (container.codUser === "") {
-                newContainer = { ...newContainer, codUser: localStorage.getItem("user") }
-                globalInsertCard(newContainer)
+                newContainer = { ...newContainer, codUser: localStorage.getItem(USER) }
+                dispach(insertCard(newContainer))
             }
             else // Aggiorno
-                globalUpdateContainer(newContainer)
+                dispach(updateContainer(newContainer))
 
             handleReset();
             setIsOpenNew(false)
