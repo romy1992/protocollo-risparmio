@@ -323,46 +323,45 @@ export const searchInLikeMonths = (value, codUser) => async (dispach) => {
  */
 const calculateTotal = (containerInput, idUMonth) => {
     // Toale spese fisse al mese
-    let totalFixedCost = container?.fixedCost?.costs ? somTotal(containerInput.fixedCost.costs) : 0;
+    let totalFixedCost = containerInput?.fixedCost?.costs ? somTotal(containerInput.fixedCost.costs) : 0;
     let editFixedCost = { ...containerInput.fixedCost, totalFixedCost }
-    if (idUMonth) {
-        let months = Array.from(containerInput?.months)
-        // Cerca il mese 
-        let month = containerInput?.months.filter(el => el?.idUMonth === idUMonth)[0];
-        // Rimuovo dal months il month vecchio
-        months = months.filter(el => el?.idUMonth !== idUMonth)
 
-        // Totale Spese idMese
-        let totalLeisure = somTotal(month.leisure)
-        // Totale Accrediti mese
-        let totalFixedMonthlyCredit = somTotal(month.fixedMonthlyCredit)
-        // Calcolo le differenze totale accrediti del mese - i costi totali
-        let difference = totalFixedMonthlyCredit - totalLeisure;
-
-        month = { ...month, totalLeisure, cost: totalLeisure, totalFixedMonthlyCredit, difference }
-        // Riaggiungo al months il month nuovo
-        months.push(month)
-        return { ...containerInput, fixedCost: { ...editFixedCost }, months }
-    } else {
-        let listMounths = containerInput?.months ? Array.from(containerInput.months) : [];
-        let editMonths = []
-        listMounths.forEach(month => {
+    let months = [];
+    containerInput?.months?.forEach(month => {
+        if (month.idUMonth === idUMonth) {
             // Totale Spese idMese
             let totalLeisure = somTotal(month.leisure)
             // Totale Accrediti mese
             let totalFixedMonthlyCredit = somTotal(month.fixedMonthlyCredit)
             // Calcolo le differenze totale accrediti del mese - i costi totali
             let difference = totalFixedMonthlyCredit - totalLeisure;
-            editMonths.push({ ...month, totalLeisure, cost: totalLeisure, totalFixedMonthlyCredit, difference })
-        });
-        return { ...containerInput, fixedCost: { ...editFixedCost }, months: editMonths }
-    }
+            // Somma i totali delle rate fisse mesili inserite nel mese
+            let toalFixActualMonth = sommToalFixActualMonth(month.leisure, containerInput?.fixedCost?.costs)
+            let costNoFixed = totalLeisure > toalFixActualMonth ? totalLeisure - toalFixActualMonth : toalFixActualMonth - totalLeisure
 
+            month = { ...month, cost: totalLeisure, costNoFixed, totalFixedMonthlyCredit, difference }
+        }
+        months.push(month)
+    })
+    return { ...containerInput, fixedCost: { ...editFixedCost }, months }
 }
 
 // Somma i totali
 const somTotal = (obj) => {
     return obj ? obj.reduce((a, b) => a + parseFloat(b.price), 0) : 0
 }
+
+// Somma i totali delle rate fisse mesili inserite nel mese
+const sommToalFixActualMonth = (leisure, fixedCost) => {
+    let prices = []
+    fixedCost.forEach(el => {
+        leisure.forEach(l => {
+            if (l?.note === el?.note)
+                prices.push({ price: l?.price })
+        })
+    })
+    return somTotal(prices)
+}
+
 
 export default containerReducer.reducer;

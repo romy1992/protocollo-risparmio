@@ -37,6 +37,7 @@ const Month = () => {
           <div className='container' >
             <h1 className='mt-3 text-center'>{actualMonth?.title} {actualMonth?.note}</h1>
             <h4 className='mt-3'>Spese Totali : {actualMonth?.cost} €</h4>
+            <h4 className='mt-3'>Spese Totali senza fisse : {actualMonth?.costNoFixed} €</h4>
             <h4 className='mt-3'>Risparmi Totali : {actualMonth?.difference} €</h4>
             <h6 className='mt-3'>{actualMonth?.des}</h6>
             <hr />

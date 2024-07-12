@@ -90,6 +90,7 @@ const CardMonth = ({ idUMonth, title, note, des, difference, cost, container }) 
             <Card.Body>
                 <Card.Subtitle style={{ fontSize: "14px" }}>
                     <Card.Text>Spese totali : {cost} €</Card.Text>
+                    <Card.Text>Spese totali senza fisse : {cost} €</Card.Text>
                     <Card.Text>Risparmio totale : {difference} €</Card.Text>
                     {
                         !isEdit ?

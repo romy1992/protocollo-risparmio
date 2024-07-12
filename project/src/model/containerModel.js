@@ -25,7 +25,6 @@ const month =
     des: "",
     cost: 0,
     leisure: [],
-    totalLeisure: 0,
     fixedMonthlyCredit: [],
     totalFixedMonthlyCredit: 0,
     difference: 0
